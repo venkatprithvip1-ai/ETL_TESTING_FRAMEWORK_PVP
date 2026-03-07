@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETL DQ Report — 2026-03-06 15:40:07</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:        #0f1117;
+    --card:      #1a1d27;
+    --border:    #2a2d3a;
+    --text:      #e2e8f0;
+    --muted:     #8892a4;
+    --pass:      #22c55e;
+    --fail:      #ef4444;
+    --skip:      #f59e0b;
+    --error:     #a855f7;
+    --accent:    #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; padding: 24px; }
+  h1   { font-size: 1.8rem; color: var(--accent); margin-bottom: 4px; }
+  h2   { font-size: 1.2rem; color: var(--text); margin: 28px 0 12px; }
+  h3   { font-size: 1rem; color: var(--muted); font-weight: 500; }
+  .meta  { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
+
+  /* Summary cards */
+  .cards { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 28px; }
+  .card  {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 22px; min-width: 140px;
+  }
+  .card .num  { font-size: 2rem; font-weight: 700; }
+  .card .lbl  { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .card.pass  .num { color: var(--pass); }
+  .card.fail  .num { color: var(--fail); }
+  .card.skip  .num { color: var(--skip); }
+  .card.error .num { color: var(--error); }
+  .card.total .num { color: var(--accent); }
+
+  /* Charts row */
+  .charts { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 36px; }
+  .chart-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; flex: 1; min-width: 300px;
+  }
+  .chart-box canvas { max-height: 280px; }
+
+  /* Dataset section */
+  .dataset-block {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; margin-bottom: 24px;
+  }
+  .ds-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .ds-badge  {
+    background: var(--accent); color: #fff;
+    border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600;
+  }
+
+  /* Results table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { background: #12151f; color: var(--muted); text-align: left; padding: 8px 12px;
+       border-bottom: 1px solid var(--border); font-weight: 500; text-transform: uppercase; font-size: 0.72rem; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(59,130,246,0.05); }
+
+  /* Status badges */
+  .badge { display:inline-block; border-radius:4px; padding:2px 8px; font-size:0.75rem; font-weight:600; }
+  .badge.PASS  { background: rgba(34,197,94,0.15);  color: var(--pass);  }
+  .badge.FAIL  { background: rgba(239,68,68,0.15);  color: var(--fail);  }
+  .badge.SKIP  { background: rgba(245,158,11,0.15); color: var(--skip);  }
+  .badge.ERROR { background: rgba(168,85,247,0.15); color: var(--error); }
+
+  .violations { color: var(--fail); font-weight: 600; }
+  .zero       { color: var(--muted); }
+
+  footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 0.78rem; }
+</style>
+</head>
+<body>
+
+<h1>🔍 ETL Data Quality Report</h1>
+<p class="meta">Generated: 2026-03-06 15:40:07 &nbsp;|&nbsp; Framework: ETL DQ v6</p>
+
+<!-- Summary Cards -->
+<div class="cards">
+  <div class="card total"> <div class="num">152</div>  <div class="lbl">Total Checks</div> </div>
+  <div class="card pass">  <div class="num">83</div> <div class="lbl">Passed</div>       </div>
+  <div class="card fail">  <div class="num">55</div> <div class="lbl">Failed</div>       </div>
+  <div class="card skip">  <div class="num">0</div> <div class="lbl">Skipped</div>      </div>
+  <div class="card error"> <div class="num">14</div>  <div class="lbl">Errors</div>       </div>
+</div>
+
+<!-- Charts -->
+<div class="charts">
+  <div class="chart-box">
+    <h3>Overall Status Distribution</h3>
+    <canvas id="doughnutChart"></canvas>
+  </div>
+  <div class="chart-box">
+    <h3>Top 15 Checks by Violations</h3>
+    <canvas id="barChart"></canvas>
+  </div>
+</div>
+
+<!-- Per-dataset tables -->
+
+<div class="dataset-block">
+  <div class="ds-header">
+    <span class="ds-badge">DATASET</span>
+    <h2>customers</h2>
+    <span style="color:var(--muted); font-size:0.82rem; margin-left:auto;">
+      ✓13 &nbsp; ✗12 &nbsp; ~0 &nbsp; !4
+    </span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Check Type</th>
+        <th>Column / Rule</th>
+        <th>Status</th>
+        <th style="text-align:right">Violations</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">credit_score</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">558</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">16,292</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">registration_date</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">2,233</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">3,025</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">credit_score</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,774</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Duplicate</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">861</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Case</td>
+  <td><code style="color:#93c5fd">tier</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">5,933</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">city</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">4,598</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">tier</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">5,933</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Outlier</td>
+  <td><code style="color:#93c5fd">credit_score</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">598</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">861</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">149,275</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">registration_date</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `</td>
+</tr>
+<tr>
+  <td>DefaultValueChecker</td>
+  <td><code style="color:#93c5fd">unknown</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">'NoneType' object has no attribute 'lower'</td>
+</tr>
+<tr>
+  <td>Cross-Column</td>
+  <td><code style="color:#93c5fd">registration_not_future</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `</td>
+</tr>
+<tr>
+  <td>Freshness</td>
+  <td><code style="color:#93c5fd">registration_date</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `</td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">full_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">country</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">registration_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Null</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">full_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">country</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">country</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">full_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">country</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">tier</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="dataset-block">
+  <div class="ds-header">
+    <span class="ds-badge">DATASET</span>
+    <h2>employees</h2>
+    <span style="color:var(--muted); font-size:0.82rem; margin-left:auto;">
+      ✓18 &nbsp; ✗15 &nbsp; ~0 &nbsp; !4
+    </span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Check Type</th>
+        <th>Column / Rule</th>
+        <th>Status</th>
+        <th style="text-align:right">Violations</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">salary</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">603</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">2,018</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,991</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">2,161</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">join_date</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,484</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">salary</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,860</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Duplicate</td>
+  <td><code style="color:#93c5fd">employee_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">998</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">3,924</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Consistency</td>
+  <td><code style="color:#93c5fd">salary_positive</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,240</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Ref Integrity</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">8</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">city</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">3,024</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">employee_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">998</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">99,275</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Outlier</td>
+  <td><code style="color:#93c5fd">salary</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">620</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Case</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">71,286</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">join_date</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `</td>
+</tr>
+<tr>
+  <td>DefaultValueChecker</td>
+  <td><code style="color:#93c5fd">unknown</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">'NoneType' object has no attribute 'lower'</td>
+</tr>
+<tr>
+  <td>Cross-Column</td>
+  <td><code style="color:#93c5fd">join_date_not_future</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `</td>
+</tr>
+<tr>
+  <td>Freshness</td>
+  <td><code style="color:#93c5fd">join_date</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text 'not-a-date' could not be parsed at index 0. Use `</td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">employee_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">employee_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">employee_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Null</td>
+  <td><code style="color:#93c5fd">employee_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Length</td>
+  <td><code style="color:#93c5fd">employee_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Length</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Precision</td>
+  <td><code style="color:#93c5fd">salary</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">employee_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Special Char</td>
+  <td><code style="color:#93c5fd">employee_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Special Char</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">employee_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">department</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">salary</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">phone</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Case</td>
+  <td><code style="color:#93c5fd">email</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="dataset-block">
+  <div class="ds-header">
+    <span class="ds-badge">DATASET</span>
+    <h2>orders</h2>
+    <span style="color:var(--muted); font-size:0.82rem; margin-left:auto;">
+      ✓18 &nbsp; ✗8 &nbsp; ~0 &nbsp; !1
+    </span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Check Type</th>
+        <th>Column / Rule</th>
+        <th>Status</th>
+        <th style="text-align:right">Violations</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">quantity</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">2,346</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">total_amount</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">6,175</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Duplicate</td>
+  <td><code style="color:#93c5fd">order_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,561</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Consistency</td>
+  <td><code style="color:#93c5fd">total_matches_qty_x_price</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">3,129</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">status</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">4,012</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">quantity</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">797</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">total_amount</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">798</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">order_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,561</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Cross-Column</td>
+  <td><code style="color:#93c5fd">delivery_after_order</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `</td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">unit_price</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">product_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">order_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">status</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Null</td>
+  <td><code style="color:#93c5fd">order_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">channel</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">order_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">product_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">unit_price</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">order_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Freshness</td>
+  <td><code style="color:#93c5fd">order_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">order_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">customer_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">order_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">status</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">total_amount</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="dataset-block">
+  <div class="ds-header">
+    <span class="ds-badge">DATASET</span>
+    <h2>products</h2>
+    <span style="color:var(--muted); font-size:0.82rem; margin-left:auto;">
+      ✓16 &nbsp; ✗8 &nbsp; ~0 &nbsp; !1
+    </span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Check Type</th>
+        <th>Column / Rule</th>
+        <th>Status</th>
+        <th style="text-align:right">Violations</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">sku</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">990</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Duplicate</td>
+  <td><code style="color:#93c5fd">product_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">281</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">stock_qty</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">422</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">product_name</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">484</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">cost_price</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">200</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">stock_qty</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">224</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Consistency</td>
+  <td><code style="color:#93c5fd">cost_less_than_price</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">205</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">product_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">281</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>DefaultValueChecker</td>
+  <td><code style="color:#93c5fd">unknown</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">'NoneType' object has no attribute 'lower'</td>
+</tr>
+<tr>
+  <td>PK Null</td>
+  <td><code style="color:#93c5fd">product_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">price</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">sku</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">category</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">price</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">product_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">price</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">category</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">product_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">category</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">sku</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">product_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">sku</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">product_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">category</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">price</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="dataset-block">
+  <div class="ds-header">
+    <span class="ds-badge">DATASET</span>
+    <h2>transactions</h2>
+    <span style="color:var(--muted); font-size:0.82rem; margin-left:auto;">
+      ✓18 &nbsp; ✗12 &nbsp; ~0 &nbsp; !4
+    </span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Check Type</th>
+        <th>Column / Rule</th>
+        <th>Status</th>
+        <th style="text-align:right">Violations</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">txn_date</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">7,567</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">reference_no</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">10,043</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">amount</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">3,941</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">amount</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,948</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Duplicate</td>
+  <td><code style="color:#93c5fd">txn_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">2,486</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">txn_type</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">4,991</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">amount</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,982</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">status</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">4,892</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">description</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">15,239</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">currency</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">4,949</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Outlier</td>
+  <td><code style="color:#93c5fd">amount</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">1,956</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">txn_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">2,486</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">txn_date</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '99-99-9999' could not be parsed at index 0. Use `</td>
+</tr>
+<tr>
+  <td>DefaultValueChecker</td>
+  <td><code style="color:#93c5fd">unknown</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">'NoneType' object has no attribute 'lower'</td>
+</tr>
+<tr>
+  <td>Cross-Column</td>
+  <td><code style="color:#93c5fd">value_date_gte_txn_date</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '99-99-9999' could not be parsed at index 0. Use `</td>
+</tr>
+<tr>
+  <td>Freshness</td>
+  <td><code style="color:#93c5fd">txn_date</code></td>
+  <td><span class="badge ERROR">ERROR</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem">[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `</td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">txn_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">account_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">value_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Null</td>
+  <td><code style="color:#93c5fd">txn_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">account_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">currency</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">txn_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">txn_type</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">txn_type</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">status</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Precision</td>
+  <td><code style="color:#93c5fd">amount</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">reference_no</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">txn_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">account_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">amount</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">currency</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">txn_date</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">status</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+    </tbody>
+  </table>
+</div>
+
+
+<footer>ETL DQ Framework v6 &nbsp;•&nbsp; Auto-generated report &nbsp;•&nbsp; Do not edit manually</footer>
+
+<script>
+// ── Doughnut chart ────────────────────────────────────────────────────────────
+new Chart(document.getElementById('doughnutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['PASS', 'FAIL', 'SKIP', 'ERROR'],
+    datasets: [{
+      data: [83, 55, 0, 14],
+      backgroundColor: ['#22c55e', '#ef4444', '#f59e0b', '#a855f7'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#e2e8f0' } } },
+    cutout: '65%'
+  }
+});
+
+// ── Bar chart — top violators ─────────────────────────────────────────────────
+const barData = {"labels": ["customer:Uniqueness", "employee:Uniqueness", "employee:Case", "customer:Pattern", "transact:Whitespace", "transact:Pattern", "transact:Pattern", "orders:Value Range", "customer:Case", "customer:Allowed Values", "transact:Mandatory Fiel", "transact:Allowed Values", "transact:Mandatory Fiel", "customer:Whitespace", "orders:Allowed Values"], "values": [149275, 99275, 71286, 16292, 15239, 10043, 7567, 6175, 5933, 5933, 4991, 4949, 4892, 4598, 4012]};
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: barData.labels,
+    datasets: [{
+      label: 'Violations',
+      data: barData.values,
+      backgroundColor: '#ef4444',
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#8892a4' }, grid: { color: '#2a2d3a' } },
+      y: { ticks: { color: '#e2e8f0', font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+# ==============================================================================
+# config/reconcile_students.yaml
+# ==============================================================================
+# Reconciliation rules: Source vs Target for the students dataset.
+# Edit this file — no Python code changes needed.
+# ==============================================================================
+
+reconciliation:
+  name: students
+  source_file: data/student.csv
+  target_file: data/students_transformed.csv
+  format: csv
+
+checks:
+
+  # ── 1. Row Count ─────────────────────────────────────────────────────────────
+  # Source and target should have approximately the same number of rows.
+  # tolerance_pct: 0.0 means exact match required.
+  # Set to 1.0 to allow 1% difference.
+  row_count:
+    tolerance_pct: 2.0
+    # expected_target_count: 9500  # uncomment if your ETL filters rows
+
+  # ── 2. Column Match ───────────────────────────────────────────────────────────
+  # These columns should be IDENTICAL between source and target.
+  # No transformation was applied to them — values must not change.
+  column_match:
+    join_key: student_id
+    columns:
+      - student_height   # height is passed through unchanged
+      - student_id       # PK should never change
+
+  # ── 3. Transformation Rules ───────────────────────────────────────────────────
+  # Verify each transformation was applied correctly.
+  # Supported rules: UPPER, LOWER, TRIM, ROUND_2, NOT_NULL, EXPR
+  transformation:
+    join_key: student_id
+    rules:
+      - source_col: student_name
+        target_col: student_name
+        rule: UPPER
+        # student_name in source is mixed case
+        # student_name in target should be UPPER CASE
+        # e.g. "Rahul Kumar" → "RAHUL KUMAR"
+
+      - source_col: student_class
+        target_col: student_class
+        rule: TRIM
+        # student_class in source has leading/trailing spaces
+        # target should have those spaces removed
+        # e.g. "  Class 6A  " → "Class 6A"
+
+      - source_col: student_score
+        target_col: student_score
+        rule: ROUND_2
+        # student_score should be rounded to 2 decimal places
+        # e.g. 87.1234 → 87.12
+
+      - source_col: student_gender
+        target_col: student_gender
+        rule: NOT_NULL
+        default_value: "UNKNOWN"
+        # NULL genders in source should become "UNKNOWN" in target
+
+  # ── 4. Aggregate Match ────────────────────────────────────────────────────────
+  # SUM and AVG of numeric columns should match between source and target.
+  # tolerance_pct: 0.5 allows 0.5% difference (for rounding effects).
+  aggregate_match:
+    columns:
+      - student_height
+    functions:
+      - SUM
+      - AVG
+      - MIN
+      - MAX
+    tolerance_pct: 0.5
+
+  # ── 5. Missing Rows ───────────────────────────────────────────────────────────
+  # Find student_ids that exist in SOURCE but are absent from TARGET.
+  # These were dropped silently by the ETL — a data loss bug.
+  missing_rows:
+    join_key: student_id
+
+  # ── 6. Extra Rows ─────────────────────────────────────────────────────────────
+  # Find student_ids that appear in TARGET but NOT in SOURCE.
+  # These are phantom rows — inserted incorrectly by the ETL.
+  extra_rows:
+    join_key: student_id
+
+  # ── 7. Duplicate Explosion ────────────────────────────────────────────────────
+  # Check if any student_id appears MORE TIMES in target than in source.
+  # This indicates a bad JOIN in the ETL logic.
+  duplicate_explosion:
+    join_key: student_id

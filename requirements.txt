@@ -1,0 +1,26 @@
+# requirements.txt
+# ETL DQ Framework v6
+# Install: pip install -r requirements.txt
+
+# ── Core ──────────────────────────────────────────────────────────────────────
+pyspark>=3.4.0          # Spark engine (v4.x also works)
+pyyaml>=6.0             # YAML config file reading
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=7.4.0           # test runner
+pytest-cov>=4.1.0       # code coverage reports
+
+# ── Reports ───────────────────────────────────────────────────────────────────
+# HTML report uses Chart.js from CDN — no extra package needed
+# JSON export uses Python's built-in json module — no package needed
+
+# ── Optional: Delta Lake support ─────────────────────────────────────────────
+# Uncomment if you want to read Delta Lake tables:
+# delta-spark>=2.4.0
+
+# ── Optional: Parquet tools ───────────────────────────────────────────────────
+# pyarrow>=12.0          # faster parquet read/write (optional)
+
+# ── Optional: Data generation ─────────────────────────────────────────────────
+# faker>=18.0            # realistic fake names/emails (optional)
+# numpy>=1.24.0          # for more realistic random distributions (optional)

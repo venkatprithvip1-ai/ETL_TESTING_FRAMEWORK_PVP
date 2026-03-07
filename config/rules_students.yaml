@@ -1,0 +1,170 @@
+# ==============================================================================
+# config/rules_students.yaml
+# ==============================================================================
+# DQ rules for the student dataset.
+# Edit this file to change any check — no Python code needed.
+# ==============================================================================
+
+dataset:
+  name: students
+  file: data/Student_dataset_v2.csv
+  format: csv
+
+checks:
+
+  # ── 1. Primary Key ──────────────────────────────────────────────────────────
+  # student_id must be unique and never null.
+  # If two students share the same ID, records cannot be trusted.
+  primary_key:
+    column: 
+      student_id
+
+  # ── 2. Mandatory Fields ──────────────────────────────────────────────────────
+  # These columns must have a value for every single student.
+  mandatory_fields:
+    columns:
+      - student_name
+      - student_class
+      - student_gender
+
+  # ── 3. Data Type Check ───────────────────────────────────────────────────────
+  # All columns are read as strings from CSV.
+  # This check confirms each value CAN be converted to the expected type.
+  data_types:
+    student_id:     integer   # must be a whole number
+    student_age:    integer   # must be a whole number
+    student_height: decimal   # can have decimals e.g. 152.5
+    student_score:  decimal   # can have decimals e.g. 87.50
+
+  # ── 4. Value Range Check ─────────────────────────────────────────────────────
+  # Catches impossible numbers — e.g. age = -1, score = 999
+  value_ranges:
+    student_age:
+      min: 5
+      max: 18
+    student_height:
+      min: 100.0    # shortest realistic student (cm)
+      max: 210.0    # tallest realistic student (cm)
+    student_score:
+      min: 0.0
+      max: 100.0
+
+  # ── 5. Allowed Values Check ──────────────────────────────────────────────────
+  # student_gender must be EXACTLY "M" or "F".
+  # "Male", "m", "N/A", "Other" are all invalid.
+  allowed_values:
+    student_gender:
+      - M
+      - F
+      - male
+      - female
+      - MALE
+      - FEMALE
+      - m
+      - f
+      - Male
+      - Female
+  # ── 6. Pattern Check ─────────────────────────────────────────────────────────
+  # student_id must be digits only — no letters or symbols.
+  # student_class must match format: "Class 6A", "Class 10B" etc.
+  patterns:
+    student_id:    '^\d+$'
+    student_class: '^Class \d{1,2}[ABC]$'
+
+  # ── 7. Length Check ──────────────────────────────────────────────────────────
+  # student_name: at least 2 chars (not just "A"), max 60 chars.
+  lengths:
+    student_name:
+      min: 2
+      max: 60
+
+  # ── 8. Uniqueness Check ──────────────────────────────────────────────────────
+  # student_id must be unique across all rows.
+  # (Separate from PK check — PK checks null+duplicate, this checks duplicate only)
+  uniqueness:
+    columns:
+      - student_id
+
+  # ── 9. Whitespace Check ──────────────────────────────────────────────────────
+  # Detects values like "  Rahul Kumar  " with extra spaces.
+  # These cause JOIN failures in ETL pipelines.
+  whitespace:
+    columns:
+      - student_name
+      - student_class
+      - student_gender
+
+  # ── 10. Default / Placeholder Value Check ────────────────────────────────────
+  # Catches "N/A", "null", "test", "unknown" etc. that source systems insert
+  # instead of leaving the field truly empty.
+  default_values:
+    student_name:
+      - "N/A"
+      - "NA"
+      - "null"
+      - "none"
+      - "unknown"
+      - "TBD"
+      - "test"
+      - "dummy"
+
+  # ── 11. Outlier Check ────────────────────────────────────────────────────────
+  # Flags values that are more than 3 standard deviations from the mean.
+  # Example: if average score is 55 and std=15, anything below 10 or above 100
+  # would be flagged (though range check already catches >100).
+  outliers:
+    columns:
+      - student_score
+      - student_height
+      - student_age
+
+  # ── 12. Completeness Ratio Check ─────────────────────────────────────────────
+  # Every important column should be at least 95% filled.
+  # If student_score is only 60% filled, something is wrong with the source.
+  completeness:
+    columns:
+      - student_name
+      - student_class
+      - student_gender
+      - student_age
+      - student_height
+      - student_score
+    min_pct: 95.0
+
+  # ── 13. Consistency Check ────────────────────────────────────────────────────
+  # Business rules expressed in SQL.
+  # Rule: score should be non-negative (if it has a value).
+  consistency:
+    - name: score_non_negative
+      condition: "try_cast(student_score AS DOUBLE) >= 0 OR student_score IS NULL"
+      message: "student_score cannot be negative"
+    - name: age_in_school_range
+      condition: >
+        (try_cast(student_age AS INT) >= 5 AND try_cast(student_age AS INT) <= 18)
+        OR student_age IS NULL
+      message: "student_age must be between 5 and 18"
+
+  # ── 14. Precision / Scale Check ──────────────────────────────────────────────
+  # student_score max 2 decimal places (e.g. 87.50 is fine, 87.123 is not).
+  # student_height max 1 decimal place (e.g. 152.5 is fine, 152.55 is not).
+  precision:
+    student_score:
+      scale: 2
+    student_height:
+      scale: 1
+
+# ── Alert Settings ────────────────────────────────────────────────────────────
+# Send alert if more than 5 checks FAIL.
+# Set enabled: true and fill in webhook_url / email details to activate.
+alerts:
+  fail_threshold: 5
+  slack:
+    enabled: false
+    webhook_url: ""
+  email:
+    enabled: false
+    smtp_host:  smtp.gmail.com
+    smtp_port:  587
+    sender:     ""
+    password:   ""
+    recipients: []

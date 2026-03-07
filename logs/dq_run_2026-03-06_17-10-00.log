@@ -1,0 +1,402 @@
+2026-03-06 17:10:00 | INFO     | MAIN                           | ETL DQ FRAMEWORK v6 STARTED
+2026-03-06 17:10:00 | INFO     | SparkSessionManager            | Starting Spark | app=ETL_DQ_v6 | master=local[*]
+2026-03-06 17:10:03 | INFO     | SparkSessionManager            | Spark started successfully
+2026-03-06 17:10:03 | INFO     | DQConfigLoader                 | Config loaded | path=config/rules_employees.yaml
+2026-03-06 17:10:03 | INFO     | DataReader                     | Reading CSV | path=data/employees.csv
+2026-03-06 17:10:04 | INFO     | DataReader                     | Loaded | rows=100000 | cols=['employee_id', 'employee_name', 'email', 'phone', 'department', 'salary', 'join_date', 'manager_id', 'status', 'city']
+2026-03-06 17:10:05 | INFO     | DQRunner                       | [employees] Running 19 checkers sequentially
+2026-03-06 17:10:05 | INFO     | PrimaryKeyChecker              | [employees] PRIMARY KEY CHECK : employee_id started
+2026-03-06 17:10:05 | INFO     | PrimaryKeyChecker              | [employees] PK Null PASS | col=employee_id
+2026-03-06 17:10:05 | WARNING  | PrimaryKeyChecker              | [employees] PK Duplicate FAIL | col=employee_id | violations=998
+2026-03-06 17:10:05 | INFO     | MandatoryFieldChecker          | [employees] MANDATORY FIELD CHECK started
+2026-03-06 17:10:05 | WARNING  | MandatoryFieldChecker          | [employees] Mandatory Field FAIL | col=department | violations=2018
+2026-03-06 17:10:06 | WARNING  | MandatoryFieldChecker          | [employees] Mandatory Field FAIL | col=email | violations=1991
+2026-03-06 17:10:06 | INFO     | MandatoryFieldChecker          | [employees] Mandatory Field PASS | col=employee_name
+2026-03-06 17:10:06 | INFO     | DataTypeChecker                | [employees] DATA TYPE CHECK started
+2026-03-06 17:10:06 | INFO     | DataTypeChecker                | [employees] Data Type PASS | col=employee_id
+2026-03-06 17:10:06 | WARNING  | DataTypeChecker                | [employees] Data Type FAIL | col=salary | violations=603
+2026-03-06 17:10:06 | ERROR    | DataTypeChecker                | [employees] Data Type ERROR | col=join_date | [CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:06 | INFO     | PatternChecker                 | [employees] PATTERN / FORMAT CHECK started
+2026-03-06 17:10:06 | WARNING  | PatternChecker                 | [employees] Pattern FAIL | col=email | violations=2161
+2026-03-06 17:10:06 | INFO     | PatternChecker                 | [employees] Pattern PASS | col=employee_id
+2026-03-06 17:10:07 | WARNING  | PatternChecker                 | [employees] Pattern FAIL | col=join_date | violations=1484
+2026-03-06 17:10:07 | INFO     | LengthChecker                  | [employees] LENGTH CHECK started
+2026-03-06 17:10:07 | INFO     | LengthChecker                  | [employees] Length PASS | col=employee_name
+2026-03-06 17:10:07 | INFO     | LengthChecker                  | [employees] Length PASS | col=department
+2026-03-06 17:10:07 | INFO     | ValueRangeChecker              | [employees] VALUE RANGE CHECK started
+2026-03-06 17:10:07 | WARNING  | ValueRangeChecker              | [employees] Value Range FAIL | col=salary | violations=1860
+2026-03-06 17:10:07 | INFO     | AllowedValuesChecker           | [employees] ALLOWED VALUES CHECK started
+2026-03-06 17:10:07 | WARNING  | AllowedValuesChecker           | [employees] Allowed Values FAIL | col=department | violations=3924
+2026-03-06 17:10:07 | INFO     | UniquenessChecker              | [employees] UNIQUENESS CHECK started
+2026-03-06 17:10:07 | WARNING  | UniquenessChecker              | [employees] Uniqueness FAIL | col=employee_id | violations=998
+2026-03-06 17:10:08 | WARNING  | UniquenessChecker              | [employees] Uniqueness FAIL | col=email | violations=99275
+2026-03-06 17:10:08 | INFO     | ConsistencyChecker             | [employees] CONSISTENCY CHECK started
+2026-03-06 17:10:08 | WARNING  | ConsistencyChecker             | [employees] Consistency FAIL | col=salary_positive | violations=1240
+2026-03-06 17:10:08 | INFO     | ReferentialIntegrityChecker    | [employees] REFERENTIAL INTEGRITY : department started
+2026-03-06 17:10:08 | ERROR    | ReferentialIntegrityChecker    | [employees] Ref Integrity ERROR | col=department | An error occurred while calling o455.count.
+: org.apache.spark.SparkException: Job aborted due to stage failure: Task 4 in stage 100.0 failed 1 times, most recent failure: Lost task 4.0 in stage 100.0 (TID 128) (192.168.0.113 executor driver): org.apache.spark.api.python.PythonException: Traceback (most recent call last):
+  File "/Users/pampanavenkatprithvi/ETL_DQ_PYSPARK_AUTO_v6/venv/lib/python3.11/site-packages/pyspark/python/lib/pyspark.zip/pyspark/worker.py", line 3305, in main
+    check_python_version(infile)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/pampanavenkatprithvi/ETL_DQ_PYSPARK_AUTO_v6/venv/lib/python3.11/site-packages/pyspark/python/lib/pyspark.zip/pyspark/worker_util.py", line 77, in check_python_version
+    raise PySparkRuntimeError(
+    ...<5 lines>...
+    )
+pyspark.errors.exceptions.base.PySparkRuntimeError: [PYTHON_VERSION_MISMATCH] Python in worker has different version: 3.13 than that in driver: 3.11, PySpark cannot run with different minor versions.
+Please check environment variables PYSPARK_PYTHON and PYSPARK_DRIVER_PYTHON are correctly set.
+
+	at org.apache.spark.api.python.BasePythonRunner$ReaderIterator.handlePythonException(PythonRunner.scala:645)
+	at org.apache.spark.api.python.PythonRunner$$anon$3.read(PythonRunner.scala:1029)
+	at org.apache.spark.api.python.PythonRunner$$anon$3.read(PythonRunner.scala:1014)
+	at org.apache.spark.api.python.BasePythonRunner$ReaderIterator.hasNext(PythonRunner.scala:596)
+	at org.apache.spark.InterruptibleIterator.hasNext(InterruptibleIterator.scala:37)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:611)
+	at scala.collection.Iterator$$anon$9.hasNext(Iterator.scala:593)
+	at scala.collection.Iterator$$anon$9.hasNext(Iterator.scala:593)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage2.hashAgg_doAggregateWithKeys_0$(Unknown Source)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage2.processNext(Unknown Source)
+	at org.apache.spark.sql.execution.BufferedRowIterator.hasNext(BufferedRowIterator.java:43)
+	at org.apache.spark.sql.execution.WholeStageCodegenEvaluatorFactory$WholeStageCodegenPartitionEvaluator$$anon$1.hasNext(WholeStageCodegenEvaluatorFactory.scala:50)
+	at scala.collection.Iterator$$anon$9.hasNext(Iterator.scala:593)
+	at org.apache.spark.shuffle.sort.BypassMergeSortShuffleWriter.write(BypassMergeSortShuffleWriter.java:153)
+	at org.apache.spark.shuffle.ShuffleWriteProcessor.write(ShuffleWriteProcessor.scala:57)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:111)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:54)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:180)
+	at org.apache.spark.scheduler.Task.run(Task.scala:147)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$5(Executor.scala:716)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:86)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:83)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:97)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:719)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+Driver stacktrace:
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$3(DAGScheduler.scala:3122)
+	at scala.Option.getOrElse(Option.scala:201)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2(DAGScheduler.scala:3122)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2$adapted(DAGScheduler.scala:3114)
+	at scala.collection.immutable.List.foreach(List.scala:323)
+	at org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:3114)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1(DAGScheduler.scala:1303)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1$adapted(DAGScheduler.scala:1303)
+	at scala.Option.foreach(Option.scala:437)
+	at org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:1303)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:3397)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:3328)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:3317)
+	at org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:50)
+Caused by: org.apache.spark.api.python.PythonException: Traceback (most recent call last):
+  File "/Users/pampanavenkatprithvi/ETL_DQ_PYSPARK_AUTO_v6/venv/lib/python3.11/site-packages/pyspark/python/lib/pyspark.zip/pyspark/worker.py", line 3305, in main
+    check_python_version(infile)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/pampanavenkatprithvi/ETL_DQ_PYSPARK_AUTO_v6/venv/lib/python3.11/site-packages/pyspark/python/lib/pyspark.zip/pyspark/worker_util.py", line 77, in check_python_version
+    raise PySparkRuntimeError(
+    ...<5 lines>...
+    )
+pyspark.errors.exceptions.base.PySparkRuntimeError: [PYTHON_VERSION_MISMATCH] Python in worker has different version: 3.13 than that in driver: 3.11, PySpark cannot run with different minor versions.
+Please check environment variables PYSPARK_PYTHON and PYSPARK_DRIVER_PYTHON are correctly set.
+
+	at org.apache.spark.api.python.BasePythonRunner$ReaderIterator.handlePythonException(PythonRunner.scala:645)
+	at org.apache.spark.api.python.PythonRunner$$anon$3.read(PythonRunner.scala:1029)
+	at org.apache.spark.api.python.PythonRunner$$anon$3.read(PythonRunner.scala:1014)
+	at org.apache.spark.api.python.BasePythonRunner$ReaderIterator.hasNext(PythonRunner.scala:596)
+	at org.apache.spark.InterruptibleIterator.hasNext(InterruptibleIterator.scala:37)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:611)
+	at scala.collection.Iterator$$anon$9.hasNext(Iterator.scala:593)
+	at scala.collection.Iterator$$anon$9.hasNext(Iterator.scala:593)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage2.hashAgg_doAggregateWithKeys_0$(Unknown Source)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage2.processNext(Unknown Source)
+	at org.apache.spark.sql.execution.BufferedRowIterator.hasNext(BufferedRowIterator.java:43)
+	at org.apache.spark.sql.execution.WholeStageCodegenEvaluatorFactory$WholeStageCodegenPartitionEvaluator$$anon$1.hasNext(WholeStageCodegenEvaluatorFactory.scala:50)
+	at scala.collection.Iterator$$anon$9.hasNext(Iterator.scala:593)
+	at org.apache.spark.shuffle.sort.BypassMergeSortShuffleWriter.write(BypassMergeSortShuffleWriter.java:153)
+	at org.apache.spark.shuffle.ShuffleWriteProcessor.write(ShuffleWriteProcessor.scala:57)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:111)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:54)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:180)
+	at org.apache.spark.scheduler.Task.run(Task.scala:147)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$5(Executor.scala:716)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:86)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:83)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:97)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:719)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+2026-03-06 17:10:08 | INFO     | WhitespaceChecker              | [employees] WHITESPACE CHECK started
+2026-03-06 17:10:08 | INFO     | WhitespaceChecker              | [employees] Whitespace PASS | col=employee_name
+2026-03-06 17:10:08 | INFO     | WhitespaceChecker              | [employees] Whitespace PASS | col=department
+2026-03-06 17:10:08 | INFO     | WhitespaceChecker              | [employees] Whitespace PASS | col=email
+2026-03-06 17:10:09 | WARNING  | WhitespaceChecker              | [employees] Whitespace FAIL | col=city | violations=3024
+2026-03-06 17:10:09 | INFO     | PrecisionScaleChecker          | [employees] PRECISION / SCALE CHECK started
+2026-03-06 17:10:09 | INFO     | PrecisionScaleChecker          | [employees] Precision PASS | col=salary
+2026-03-06 17:10:09 | INFO     | CaseChecker                    | [employees] CASE SENSITIVITY CHECK started
+2026-03-06 17:10:09 | WARNING  | CaseChecker                    | [employees] Case FAIL | col=department | violations=71286
+2026-03-06 17:10:09 | INFO     | CaseChecker                    | [employees] Case PASS | col=email
+2026-03-06 17:10:09 | INFO     | SpecialCharacterChecker        | [employees] SPECIAL CHARACTER CHECK started
+2026-03-06 17:10:09 | INFO     | SpecialCharacterChecker        | [employees] Special Char PASS | col=employee_name
+2026-03-06 17:10:09 | INFO     | SpecialCharacterChecker        | [employees] Special Char PASS | col=department
+2026-03-06 17:10:09 | INFO     | OutlierChecker                 | [employees] OUTLIER CHECK  (z=3.0σ) started
+2026-03-06 17:10:10 | WARNING  | OutlierChecker                 | [employees] Outlier FAIL | col=salary | violations=620
+2026-03-06 17:10:10 | INFO     | DefaultValueChecker            | [employees] DEFAULT VALUE CHECK started
+2026-03-06 17:10:10 | ERROR    | DQRunner                       | [employees] DefaultValueChecker CRASHED: 'NoneType' object has no attribute 'lower'
+2026-03-06 17:10:10 | INFO     | CrossColumnChecker             | [employees] CROSS-COLUMN VALIDATION started
+2026-03-06 17:10:10 | ERROR    | CrossColumnChecker             | [employees] Cross-Column ERROR | col=join_date_not_future | [CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:10 | INFO     | CompletenessRatioChecker       | [employees] COMPLETENESS RATIO CHECK  (min : 90.0%) started
+2026-03-06 17:10:10 | INFO     | CompletenessRatioChecker       | [employees] Completeness PASS | col=employee_name
+2026-03-06 17:10:10 | INFO     | CompletenessRatioChecker       | [employees] Completeness PASS | col=email
+2026-03-06 17:10:10 | INFO     | CompletenessRatioChecker       | [employees] Completeness PASS | col=department
+2026-03-06 17:10:10 | INFO     | CompletenessRatioChecker       | [employees] Completeness PASS | col=salary
+2026-03-06 17:10:10 | INFO     | CompletenessRatioChecker       | [employees] Completeness PASS | col=phone
+2026-03-06 17:10:10 | INFO     | FreshnessChecker               | [employees] FRESHNESS CHECK : join_date started
+2026-03-06 17:10:10 | ERROR    | FreshnessChecker               | [employees] Freshness ERROR | col=join_date | [CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:10 | INFO     | DQRunner                       | [employees] All checks completed — 37 results
+2026-03-06 17:10:10 | WARNING  | AlertManager                   | ALERT TRIGGERED | dataset=employees | fails=14 > threshold=5
+2026-03-06 17:10:10 | INFO     | DQConfigLoader                 | Config loaded | path=config/rules_orders.yaml
+2026-03-06 17:10:10 | INFO     | DataReader                     | Reading CSV | path=data/orders.csv
+2026-03-06 17:10:10 | INFO     | DataReader                     | Loaded | rows=200000 | cols=['order_id', 'customer_id', 'product_id', 'quantity', 'unit_price', 'total_amount', 'order_date', 'delivery_date', 'status', 'channel']
+2026-03-06 17:10:10 | INFO     | DQRunner                       | [orders] Running 10 checkers sequentially
+2026-03-06 17:10:10 | INFO     | PrimaryKeyChecker              | [orders] PRIMARY KEY CHECK : order_id started
+2026-03-06 17:10:10 | INFO     | PrimaryKeyChecker              | [orders] PK Null PASS | col=order_id
+2026-03-06 17:10:11 | WARNING  | PrimaryKeyChecker              | [orders] PK Duplicate FAIL | col=order_id | violations=1561
+2026-03-06 17:10:11 | INFO     | MandatoryFieldChecker          | [orders] MANDATORY FIELD CHECK started
+2026-03-06 17:10:11 | INFO     | MandatoryFieldChecker          | [orders] Mandatory Field PASS | col=customer_id
+2026-03-06 17:10:11 | INFO     | MandatoryFieldChecker          | [orders] Mandatory Field PASS | col=product_id
+2026-03-06 17:10:11 | INFO     | MandatoryFieldChecker          | [orders] Mandatory Field PASS | col=order_date
+2026-03-06 17:10:11 | INFO     | MandatoryFieldChecker          | [orders] Mandatory Field PASS | col=status
+2026-03-06 17:10:11 | INFO     | DataTypeChecker                | [orders] DATA TYPE CHECK started
+2026-03-06 17:10:11 | INFO     | DataTypeChecker                | [orders] Data Type PASS | col=order_id
+2026-03-06 17:10:11 | INFO     | DataTypeChecker                | [orders] Data Type PASS | col=customer_id
+2026-03-06 17:10:11 | INFO     | DataTypeChecker                | [orders] Data Type PASS | col=product_id
+2026-03-06 17:10:11 | WARNING  | DataTypeChecker                | [orders] Data Type FAIL | col=quantity | violations=797
+2026-03-06 17:10:11 | INFO     | DataTypeChecker                | [orders] Data Type PASS | col=unit_price
+2026-03-06 17:10:11 | WARNING  | DataTypeChecker                | [orders] Data Type FAIL | col=total_amount | violations=798
+2026-03-06 17:10:12 | INFO     | DataTypeChecker                | [orders] Data Type PASS | col=order_date
+2026-03-06 17:10:12 | INFO     | ValueRangeChecker              | [orders] VALUE RANGE CHECK started
+2026-03-06 17:10:12 | WARNING  | ValueRangeChecker              | [orders] Value Range FAIL | col=quantity | violations=2346
+2026-03-06 17:10:12 | INFO     | ValueRangeChecker              | [orders] Value Range PASS | col=unit_price
+2026-03-06 17:10:12 | WARNING  | ValueRangeChecker              | [orders] Value Range FAIL | col=total_amount | violations=6175
+2026-03-06 17:10:12 | INFO     | AllowedValuesChecker           | [orders] ALLOWED VALUES CHECK started
+2026-03-06 17:10:12 | WARNING  | AllowedValuesChecker           | [orders] Allowed Values FAIL | col=status | violations=4012
+2026-03-06 17:10:12 | INFO     | AllowedValuesChecker           | [orders] Allowed Values PASS | col=channel
+2026-03-06 17:10:12 | INFO     | UniquenessChecker              | [orders] UNIQUENESS CHECK started
+2026-03-06 17:10:12 | WARNING  | UniquenessChecker              | [orders] Uniqueness FAIL | col=order_id | violations=1561
+2026-03-06 17:10:12 | INFO     | ConsistencyChecker             | [orders] CONSISTENCY CHECK started
+2026-03-06 17:10:13 | WARNING  | ConsistencyChecker             | [orders] Consistency FAIL | col=total_matches_qty_x_price | violations=3129
+2026-03-06 17:10:13 | INFO     | CrossColumnChecker             | [orders] CROSS-COLUMN VALIDATION started
+2026-03-06 17:10:13 | ERROR    | CrossColumnChecker             | [orders] Cross-Column ERROR | col=delivery_after_order | [CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:13 | INFO     | CompletenessRatioChecker       | [orders] COMPLETENESS RATIO CHECK  (min : 95.0%) started
+2026-03-06 17:10:13 | INFO     | CompletenessRatioChecker       | [orders] Completeness PASS | col=order_id
+2026-03-06 17:10:13 | INFO     | CompletenessRatioChecker       | [orders] Completeness PASS | col=customer_id
+2026-03-06 17:10:13 | INFO     | CompletenessRatioChecker       | [orders] Completeness PASS | col=order_date
+2026-03-06 17:10:13 | INFO     | CompletenessRatioChecker       | [orders] Completeness PASS | col=status
+2026-03-06 17:10:13 | INFO     | CompletenessRatioChecker       | [orders] Completeness PASS | col=total_amount
+2026-03-06 17:10:13 | INFO     | FreshnessChecker               | [orders] FRESHNESS CHECK : order_date started
+2026-03-06 17:10:13 | INFO     | FreshnessChecker               | [orders] Freshness PASS | col=order_date
+2026-03-06 17:10:13 | INFO     | DQRunner                       | [orders] All checks completed — 27 results
+2026-03-06 17:10:13 | WARNING  | AlertManager                   | ALERT TRIGGERED | dataset=orders | fails=8 > threshold=5
+2026-03-06 17:10:13 | INFO     | DQConfigLoader                 | Config loaded | path=config/rules_products.yaml
+2026-03-06 17:10:13 | INFO     | DataReader                     | Reading CSV | path=data/products.csv
+2026-03-06 17:10:13 | INFO     | DataReader                     | Loaded | rows=50000 | cols=['product_id', 'sku', 'product_name', 'category', 'sub_category', 'price', 'cost_price', 'stock_qty', 'supplier_id', 'is_active']
+2026-03-06 17:10:13 | INFO     | DQRunner                       | [products] Running 11 checkers sequentially
+2026-03-06 17:10:13 | INFO     | PrimaryKeyChecker              | [products] PRIMARY KEY CHECK : product_id started
+2026-03-06 17:10:13 | INFO     | PrimaryKeyChecker              | [products] PK Null PASS | col=product_id
+2026-03-06 17:10:13 | WARNING  | PrimaryKeyChecker              | [products] PK Duplicate FAIL | col=product_id | violations=281
+2026-03-06 17:10:13 | INFO     | MandatoryFieldChecker          | [products] MANDATORY FIELD CHECK started
+2026-03-06 17:10:13 | INFO     | MandatoryFieldChecker          | [products] Mandatory Field PASS | col=sku
+2026-03-06 17:10:14 | WARNING  | MandatoryFieldChecker          | [products] Mandatory Field FAIL | col=product_name | violations=484
+2026-03-06 17:10:14 | INFO     | MandatoryFieldChecker          | [products] Mandatory Field PASS | col=category
+2026-03-06 17:10:14 | INFO     | MandatoryFieldChecker          | [products] Mandatory Field PASS | col=price
+2026-03-06 17:10:14 | INFO     | DataTypeChecker                | [products] DATA TYPE CHECK started
+2026-03-06 17:10:14 | INFO     | DataTypeChecker                | [products] Data Type PASS | col=product_id
+2026-03-06 17:10:14 | INFO     | DataTypeChecker                | [products] Data Type PASS | col=price
+2026-03-06 17:10:14 | WARNING  | DataTypeChecker                | [products] Data Type FAIL | col=cost_price | violations=200
+2026-03-06 17:10:14 | WARNING  | DataTypeChecker                | [products] Data Type FAIL | col=stock_qty | violations=224
+2026-03-06 17:10:14 | INFO     | PatternChecker                 | [products] PATTERN / FORMAT CHECK started
+2026-03-06 17:10:14 | WARNING  | PatternChecker                 | [products] Pattern FAIL | col=sku | violations=990
+2026-03-06 17:10:14 | INFO     | ValueRangeChecker              | [products] VALUE RANGE CHECK started
+2026-03-06 17:10:14 | INFO     | ValueRangeChecker              | [products] Value Range PASS | col=price
+2026-03-06 17:10:14 | WARNING  | ValueRangeChecker              | [products] Value Range FAIL | col=stock_qty | violations=422
+2026-03-06 17:10:14 | INFO     | AllowedValuesChecker           | [products] ALLOWED VALUES CHECK started
+2026-03-06 17:10:14 | INFO     | AllowedValuesChecker           | [products] Allowed Values PASS | col=category
+2026-03-06 17:10:14 | INFO     | UniquenessChecker              | [products] UNIQUENESS CHECK started
+2026-03-06 17:10:14 | WARNING  | UniquenessChecker              | [products] Uniqueness FAIL | col=product_id | violations=281
+2026-03-06 17:10:15 | INFO     | UniquenessChecker              | [products] Uniqueness PASS | col=sku
+2026-03-06 17:10:15 | INFO     | ConsistencyChecker             | [products] CONSISTENCY CHECK started
+2026-03-06 17:10:15 | WARNING  | ConsistencyChecker             | [products] Consistency FAIL | col=cost_less_than_price | violations=205
+2026-03-06 17:10:15 | INFO     | WhitespaceChecker              | [products] WHITESPACE CHECK started
+2026-03-06 17:10:15 | INFO     | WhitespaceChecker              | [products] Whitespace PASS | col=product_name
+2026-03-06 17:10:15 | INFO     | WhitespaceChecker              | [products] Whitespace PASS | col=category
+2026-03-06 17:10:15 | INFO     | DefaultValueChecker            | [products] DEFAULT VALUE CHECK started
+2026-03-06 17:10:15 | ERROR    | DQRunner                       | [products] DefaultValueChecker CRASHED: 'NoneType' object has no attribute 'lower'
+2026-03-06 17:10:15 | INFO     | CompletenessRatioChecker       | [products] COMPLETENESS RATIO CHECK  (min : 98.0%) started
+2026-03-06 17:10:15 | INFO     | CompletenessRatioChecker       | [products] Completeness PASS | col=product_id
+2026-03-06 17:10:15 | INFO     | CompletenessRatioChecker       | [products] Completeness PASS | col=sku
+2026-03-06 17:10:15 | INFO     | CompletenessRatioChecker       | [products] Completeness PASS | col=product_name
+2026-03-06 17:10:15 | INFO     | CompletenessRatioChecker       | [products] Completeness PASS | col=category
+2026-03-06 17:10:15 | INFO     | CompletenessRatioChecker       | [products] Completeness PASS | col=price
+2026-03-06 17:10:15 | INFO     | DQRunner                       | [products] All checks completed — 25 results
+2026-03-06 17:10:15 | WARNING  | AlertManager                   | ALERT TRIGGERED | dataset=products | fails=8 > threshold=3
+2026-03-06 17:10:15 | INFO     | DQConfigLoader                 | Config loaded | path=config/rules_transactions.yaml
+2026-03-06 17:10:15 | INFO     | DataReader                     | Reading CSV | path=data/transactions.csv
+2026-03-06 17:10:15 | INFO     | DataReader                     | Loaded | rows=500000 | cols=['txn_id', 'account_id', 'txn_type', 'amount', 'currency', 'txn_date', 'value_date', 'status', 'reference_no', 'description']
+2026-03-06 17:10:15 | INFO     | DQRunner                       | [transactions] Running 14 checkers sequentially
+2026-03-06 17:10:15 | INFO     | PrimaryKeyChecker              | [transactions] PRIMARY KEY CHECK : txn_id started
+2026-03-06 17:10:15 | INFO     | PrimaryKeyChecker              | [transactions] PK Null PASS | col=txn_id
+2026-03-06 17:10:16 | WARNING  | PrimaryKeyChecker              | [transactions] PK Duplicate FAIL | col=txn_id | violations=2486
+2026-03-06 17:10:16 | INFO     | MandatoryFieldChecker          | [transactions] MANDATORY FIELD CHECK started
+2026-03-06 17:10:16 | INFO     | MandatoryFieldChecker          | [transactions] Mandatory Field PASS | col=account_id
+2026-03-06 17:10:16 | WARNING  | MandatoryFieldChecker          | [transactions] Mandatory Field FAIL | col=txn_type | violations=4991
+2026-03-06 17:10:16 | WARNING  | MandatoryFieldChecker          | [transactions] Mandatory Field FAIL | col=amount | violations=1982
+2026-03-06 17:10:16 | INFO     | MandatoryFieldChecker          | [transactions] Mandatory Field PASS | col=currency
+2026-03-06 17:10:16 | INFO     | MandatoryFieldChecker          | [transactions] Mandatory Field PASS | col=txn_date
+2026-03-06 17:10:16 | WARNING  | MandatoryFieldChecker          | [transactions] Mandatory Field FAIL | col=status | violations=4892
+2026-03-06 17:10:16 | INFO     | DataTypeChecker                | [transactions] DATA TYPE CHECK started
+2026-03-06 17:10:16 | INFO     | DataTypeChecker                | [transactions] Data Type PASS | col=txn_id
+2026-03-06 17:10:16 | INFO     | DataTypeChecker                | [transactions] Data Type PASS | col=account_id
+2026-03-06 17:10:17 | WARNING  | DataTypeChecker                | [transactions] Data Type FAIL | col=amount | violations=1948
+2026-03-06 17:10:17 | ERROR    | DataTypeChecker                | [transactions] Data Type ERROR | col=txn_date | [CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:17 | INFO     | DataTypeChecker                | [transactions] Data Type PASS | col=value_date
+2026-03-06 17:10:17 | INFO     | PatternChecker                 | [transactions] PATTERN / FORMAT CHECK started
+2026-03-06 17:10:17 | WARNING  | PatternChecker                 | [transactions] Pattern FAIL | col=txn_date | violations=7567
+2026-03-06 17:10:17 | WARNING  | PatternChecker                 | [transactions] Pattern FAIL | col=reference_no | violations=10043
+2026-03-06 17:10:17 | INFO     | ValueRangeChecker              | [transactions] VALUE RANGE CHECK started
+2026-03-06 17:10:17 | WARNING  | ValueRangeChecker              | [transactions] Value Range FAIL | col=amount | violations=3941
+2026-03-06 17:10:17 | INFO     | AllowedValuesChecker           | [transactions] ALLOWED VALUES CHECK started
+2026-03-06 17:10:17 | INFO     | AllowedValuesChecker           | [transactions] Allowed Values PASS | col=txn_type
+2026-03-06 17:10:18 | WARNING  | AllowedValuesChecker           | [transactions] Allowed Values FAIL | col=currency | violations=4949
+2026-03-06 17:10:18 | INFO     | AllowedValuesChecker           | [transactions] Allowed Values PASS | col=status
+2026-03-06 17:10:18 | INFO     | UniquenessChecker              | [transactions] UNIQUENESS CHECK started
+2026-03-06 17:10:18 | WARNING  | UniquenessChecker              | [transactions] Uniqueness FAIL | col=txn_id | violations=2486
+2026-03-06 17:10:18 | INFO     | UniquenessChecker              | [transactions] Uniqueness PASS | col=reference_no
+2026-03-06 17:10:18 | INFO     | WhitespaceChecker              | [transactions] WHITESPACE CHECK started
+2026-03-06 17:10:18 | WARNING  | WhitespaceChecker              | [transactions] Whitespace FAIL | col=description | violations=15239
+2026-03-06 17:10:18 | INFO     | WhitespaceChecker              | [transactions] Whitespace PASS | col=txn_type
+2026-03-06 17:10:18 | INFO     | PrecisionScaleChecker          | [transactions] PRECISION / SCALE CHECK started
+2026-03-06 17:10:19 | INFO     | PrecisionScaleChecker          | [transactions] Precision PASS | col=amount
+2026-03-06 17:10:19 | INFO     | OutlierChecker                 | [transactions] OUTLIER CHECK  (z=3.0σ) started
+2026-03-06 17:10:19 | WARNING  | OutlierChecker                 | [transactions] Outlier FAIL | col=amount | violations=1956
+2026-03-06 17:10:19 | INFO     | DefaultValueChecker            | [transactions] DEFAULT VALUE CHECK started
+2026-03-06 17:10:19 | ERROR    | DQRunner                       | [transactions] DefaultValueChecker CRASHED: 'NoneType' object has no attribute 'lower'
+2026-03-06 17:10:19 | INFO     | CrossColumnChecker             | [transactions] CROSS-COLUMN VALIDATION started
+2026-03-06 17:10:19 | ERROR    | CrossColumnChecker             | [transactions] Cross-Column ERROR | col=value_date_gte_txn_date | [CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:19 | INFO     | CompletenessRatioChecker       | [transactions] COMPLETENESS RATIO CHECK  (min : 99.0%) started
+2026-03-06 17:10:19 | INFO     | CompletenessRatioChecker       | [transactions] Completeness PASS | col=txn_id
+2026-03-06 17:10:19 | INFO     | CompletenessRatioChecker       | [transactions] Completeness PASS | col=account_id
+2026-03-06 17:10:19 | INFO     | CompletenessRatioChecker       | [transactions] Completeness PASS | col=amount
+2026-03-06 17:10:19 | INFO     | CompletenessRatioChecker       | [transactions] Completeness PASS | col=currency
+2026-03-06 17:10:19 | INFO     | CompletenessRatioChecker       | [transactions] Completeness PASS | col=txn_date
+2026-03-06 17:10:20 | INFO     | CompletenessRatioChecker       | [transactions] Completeness PASS | col=status
+2026-03-06 17:10:20 | INFO     | FreshnessChecker               | [transactions] FRESHNESS CHECK : txn_date started
+2026-03-06 17:10:20 | ERROR    | FreshnessChecker               | [transactions] Freshness ERROR | col=txn_date | [CANNOT_PARSE_TIMESTAMP] Text '99-99-9999' could not be parsed at index 0. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:20 | INFO     | DQRunner                       | [transactions] All checks completed — 34 results
+2026-03-06 17:10:20 | WARNING  | AlertManager                   | ALERT TRIGGERED | dataset=transactions | fails=12 > threshold=3
+2026-03-06 17:10:20 | INFO     | DQConfigLoader                 | Config loaded | path=config/rules_customers.yaml
+2026-03-06 17:10:20 | INFO     | DataReader                     | Reading CSV | path=data/customers.csv
+2026-03-06 17:10:20 | INFO     | DataReader                     | Loaded | rows=150000 | cols=['customer_id', 'full_name', 'email', 'phone', 'city', 'country', 'registration_date', 'tier', 'credit_score', 'is_verified']
+2026-03-06 17:10:20 | INFO     | DQRunner                       | [customers] Running 14 checkers sequentially
+2026-03-06 17:10:20 | INFO     | PrimaryKeyChecker              | [customers] PRIMARY KEY CHECK : customer_id started
+2026-03-06 17:10:20 | INFO     | PrimaryKeyChecker              | [customers] PK Null PASS | col=customer_id
+2026-03-06 17:10:20 | WARNING  | PrimaryKeyChecker              | [customers] PK Duplicate FAIL | col=customer_id | violations=861
+2026-03-06 17:10:20 | INFO     | MandatoryFieldChecker          | [customers] MANDATORY FIELD CHECK started
+2026-03-06 17:10:20 | INFO     | MandatoryFieldChecker          | [customers] Mandatory Field PASS | col=full_name
+2026-03-06 17:10:20 | WARNING  | MandatoryFieldChecker          | [customers] Mandatory Field FAIL | col=email | violations=3025
+2026-03-06 17:10:20 | INFO     | MandatoryFieldChecker          | [customers] Mandatory Field PASS | col=country
+2026-03-06 17:10:20 | INFO     | MandatoryFieldChecker          | [customers] Mandatory Field PASS | col=registration_date
+2026-03-06 17:10:20 | INFO     | DataTypeChecker                | [customers] DATA TYPE CHECK started
+2026-03-06 17:10:20 | INFO     | DataTypeChecker                | [customers] Data Type PASS | col=customer_id
+2026-03-06 17:10:20 | ERROR    | DataTypeChecker                | [customers] Data Type ERROR | col=registration_date | [CANNOT_PARSE_TIMESTAMP] Text '99-99-9999' could not be parsed at index 0. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:20 | WARNING  | DataTypeChecker                | [customers] Data Type FAIL | col=credit_score | violations=558
+2026-03-06 17:10:20 | INFO     | PatternChecker                 | [customers] PATTERN / FORMAT CHECK started
+2026-03-06 17:10:20 | WARNING  | PatternChecker                 | [customers] Pattern FAIL | col=email | violations=16292
+2026-03-06 17:10:21 | WARNING  | PatternChecker                 | [customers] Pattern FAIL | col=registration_date | violations=2233
+2026-03-06 17:10:21 | INFO     | ValueRangeChecker              | [customers] VALUE RANGE CHECK started
+2026-03-06 17:10:21 | WARNING  | ValueRangeChecker              | [customers] Value Range FAIL | col=credit_score | violations=1774
+2026-03-06 17:10:21 | INFO     | AllowedValuesChecker           | [customers] ALLOWED VALUES CHECK started
+2026-03-06 17:10:21 | WARNING  | AllowedValuesChecker           | [customers] Allowed Values FAIL | col=tier | violations=5933
+2026-03-06 17:10:21 | INFO     | AllowedValuesChecker           | [customers] Allowed Values PASS | col=country
+2026-03-06 17:10:21 | INFO     | UniquenessChecker              | [customers] UNIQUENESS CHECK started
+2026-03-06 17:10:21 | WARNING  | UniquenessChecker              | [customers] Uniqueness FAIL | col=customer_id | violations=861
+2026-03-06 17:10:21 | WARNING  | UniquenessChecker              | [customers] Uniqueness FAIL | col=email | violations=149275
+2026-03-06 17:10:21 | INFO     | WhitespaceChecker              | [customers] WHITESPACE CHECK started
+2026-03-06 17:10:21 | INFO     | WhitespaceChecker              | [customers] Whitespace PASS | col=full_name
+2026-03-06 17:10:21 | WARNING  | WhitespaceChecker              | [customers] Whitespace FAIL | col=city | violations=4598
+2026-03-06 17:10:21 | INFO     | WhitespaceChecker              | [customers] Whitespace PASS | col=country
+2026-03-06 17:10:21 | INFO     | CaseChecker                    | [customers] CASE SENSITIVITY CHECK started
+2026-03-06 17:10:21 | WARNING  | CaseChecker                    | [customers] Case FAIL | col=tier | violations=5933
+2026-03-06 17:10:21 | INFO     | OutlierChecker                 | [customers] OUTLIER CHECK  (z=3.0σ) started
+2026-03-06 17:10:22 | WARNING  | OutlierChecker                 | [customers] Outlier FAIL | col=credit_score | violations=598
+2026-03-06 17:10:22 | INFO     | DefaultValueChecker            | [customers] DEFAULT VALUE CHECK started
+2026-03-06 17:10:22 | ERROR    | DQRunner                       | [customers] DefaultValueChecker CRASHED: 'NoneType' object has no attribute 'lower'
+2026-03-06 17:10:22 | INFO     | CrossColumnChecker             | [customers] CROSS-COLUMN VALIDATION started
+2026-03-06 17:10:22 | ERROR    | CrossColumnChecker             | [customers] Cross-Column ERROR | col=registration_not_future | [CANNOT_PARSE_TIMESTAMP] Text 'not-a-date' could not be parsed at index 0. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:22 | INFO     | CompletenessRatioChecker       | [customers] COMPLETENESS RATIO CHECK  (min : 92.0%) started
+2026-03-06 17:10:22 | INFO     | CompletenessRatioChecker       | [customers] Completeness PASS | col=customer_id
+2026-03-06 17:10:22 | INFO     | CompletenessRatioChecker       | [customers] Completeness PASS | col=full_name
+2026-03-06 17:10:22 | INFO     | CompletenessRatioChecker       | [customers] Completeness PASS | col=email
+2026-03-06 17:10:22 | INFO     | CompletenessRatioChecker       | [customers] Completeness PASS | col=country
+2026-03-06 17:10:22 | INFO     | CompletenessRatioChecker       | [customers] Completeness PASS | col=tier
+2026-03-06 17:10:22 | INFO     | FreshnessChecker               | [customers] FRESHNESS CHECK : registration_date started
+2026-03-06 17:10:22 | ERROR    | FreshnessChecker               | [customers] Freshness ERROR | col=registration_date | [CANNOT_PARSE_TIMESTAMP] Text 'not-a-date' could not be parsed at index 0. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007
+2026-03-06 17:10:22 | INFO     | DQRunner                       | [customers] All checks completed — 29 results
+2026-03-06 17:10:22 | WARNING  | AlertManager                   | ALERT TRIGGERED | dataset=customers | fails=12 > threshold=5
+2026-03-06 17:10:22 | INFO     | DQConfigLoader                 | Config loaded | path=config/rules_students.yaml
+2026-03-06 17:10:22 | INFO     | DataReader                     | Reading CSV | path=data/student.csv
+2026-03-06 17:10:22 | INFO     | DataReader                     | Loaded | rows=10000 | cols=['student_id', 'student_name', 'student_class', 'student_gender', 'student_age', 'student_height', 'student_score']
+2026-03-06 17:10:22 | INFO     | DQRunner                       | [students] Running 14 checkers sequentially
+2026-03-06 17:10:22 | INFO     | PrimaryKeyChecker              | [students] PRIMARY KEY CHECK : student_id started
+2026-03-06 17:10:22 | INFO     | PrimaryKeyChecker              | [students] PK Null PASS | col=student_id
+2026-03-06 17:10:22 | WARNING  | PrimaryKeyChecker              | [students] PK Duplicate FAIL | col=student_id | violations=99
+2026-03-06 17:10:22 | INFO     | MandatoryFieldChecker          | [students] MANDATORY FIELD CHECK started
+2026-03-06 17:10:22 | WARNING  | MandatoryFieldChecker          | [students] Mandatory Field FAIL | col=student_name | violations=187
+2026-03-06 17:10:22 | WARNING  | MandatoryFieldChecker          | [students] Mandatory Field FAIL | col=student_class | violations=210
+2026-03-06 17:10:22 | WARNING  | MandatoryFieldChecker          | [students] Mandatory Field FAIL | col=student_gender | violations=214
+2026-03-06 17:10:22 | INFO     | DataTypeChecker                | [students] DATA TYPE CHECK started
+2026-03-06 17:10:22 | INFO     | DataTypeChecker                | [students] Data Type PASS | col=student_id
+2026-03-06 17:10:22 | WARNING  | DataTypeChecker                | [students] Data Type FAIL | col=student_age | violations=179
+2026-03-06 17:10:22 | WARNING  | DataTypeChecker                | [students] Data Type FAIL | col=student_height | violations=278
+2026-03-06 17:10:23 | WARNING  | DataTypeChecker                | [students] Data Type FAIL | col=student_score | violations=312
+2026-03-06 17:10:23 | INFO     | PatternChecker                 | [students] PATTERN / FORMAT CHECK started
+2026-03-06 17:10:23 | INFO     | PatternChecker                 | [students] Pattern PASS | col=student_id
+2026-03-06 17:10:23 | WARNING  | PatternChecker                 | [students] Pattern FAIL | col=student_class | violations=221
+2026-03-06 17:10:23 | INFO     | LengthChecker                  | [students] LENGTH CHECK started
+2026-03-06 17:10:23 | INFO     | LengthChecker                  | [students] Length PASS | col=student_name
+2026-03-06 17:10:23 | INFO     | ValueRangeChecker              | [students] VALUE RANGE CHECK started
+2026-03-06 17:10:23 | WARNING  | ValueRangeChecker              | [students] Value Range FAIL | col=student_age | violations=177
+2026-03-06 17:10:23 | WARNING  | ValueRangeChecker              | [students] Value Range FAIL | col=student_height | violations=117
+2026-03-06 17:10:23 | WARNING  | ValueRangeChecker              | [students] Value Range FAIL | col=student_score | violations=160
+2026-03-06 17:10:23 | INFO     | AllowedValuesChecker           | [students] ALLOWED VALUES CHECK started
+2026-03-06 17:10:23 | WARNING  | AllowedValuesChecker           | [students] Allowed Values FAIL | col=student_gender | violations=297
+2026-03-06 17:10:23 | INFO     | UniquenessChecker              | [students] UNIQUENESS CHECK started
+2026-03-06 17:10:23 | WARNING  | UniquenessChecker              | [students] Uniqueness FAIL | col=student_id | violations=99
+2026-03-06 17:10:23 | INFO     | ConsistencyChecker             | [students] CONSISTENCY CHECK started
+2026-03-06 17:10:23 | WARNING  | ConsistencyChecker             | [students] Consistency FAIL | col=score_non_negative | violations=53
+2026-03-06 17:10:23 | WARNING  | ConsistencyChecker             | [students] Consistency FAIL | col=age_in_school_range | violations=177
+2026-03-06 17:10:23 | INFO     | WhitespaceChecker              | [students] WHITESPACE CHECK started
+2026-03-06 17:10:23 | WARNING  | WhitespaceChecker              | [students] Whitespace FAIL | col=student_name | violations=216
+2026-03-06 17:10:23 | WARNING  | WhitespaceChecker              | [students] Whitespace FAIL | col=student_class | violations=225
+2026-03-06 17:10:23 | INFO     | WhitespaceChecker              | [students] Whitespace PASS | col=student_gender
+2026-03-06 17:10:23 | INFO     | PrecisionScaleChecker          | [students] PRECISION / SCALE CHECK started
+2026-03-06 17:10:23 | INFO     | PrecisionScaleChecker          | [students] Precision PASS | col=student_score
+2026-03-06 17:10:23 | INFO     | PrecisionScaleChecker          | [students] Precision PASS | col=student_height
+2026-03-06 17:10:23 | INFO     | OutlierChecker                 | [students] OUTLIER CHECK  (z=3.0σ) started
+2026-03-06 17:10:23 | WARNING  | OutlierChecker                 | [students] Outlier FAIL | col=student_score | violations=63
+2026-03-06 17:10:24 | WARNING  | OutlierChecker                 | [students] Outlier FAIL | col=student_height | violations=42
+2026-03-06 17:10:24 | WARNING  | OutlierChecker                 | [students] Outlier FAIL | col=student_age | violations=87
+2026-03-06 17:10:24 | INFO     | DefaultValueChecker            | [students] DEFAULT VALUE CHECK started
+2026-03-06 17:10:24 | WARNING  | DefaultValueChecker            | [students] Default Val FAIL | col=student_name | violations=97
+2026-03-06 17:10:24 | INFO     | CompletenessRatioChecker       | [students] COMPLETENESS RATIO CHECK  (min : 95.0%) started
+2026-03-06 17:10:24 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_name
+2026-03-06 17:10:24 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_class
+2026-03-06 17:10:24 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_gender
+2026-03-06 17:10:24 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_age
+2026-03-06 17:10:24 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_height
+2026-03-06 17:10:24 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_score
+2026-03-06 17:10:24 | INFO     | DQRunner                       | [students] All checks completed — 34 results
+2026-03-06 17:10:24 | WARNING  | AlertManager                   | ALERT TRIGGERED | dataset=students | fails=21 > threshold=5
+2026-03-06 17:10:24 | INFO     | SparkSessionManager            | Spark stopped
+2026-03-06 17:10:24 | INFO     | MAIN                           | ETL DQ FRAMEWORK v6 FINISHED

@@ -1,0 +1,59 @@
+2026-03-07 12:05:11 | INFO     | MAIN                           | ETL DQ FRAMEWORK v6 STARTED
+2026-03-07 12:05:11 | INFO     | SparkSessionManager            | Starting Spark | app=ETL_DQ_v6 | master=local[*]
+2026-03-07 12:05:13 | INFO     | SparkSessionManager            | Spark started successfully
+2026-03-07 12:05:13 | INFO     | DQConfigLoader                 | Config loaded | path=config/rules_students.yaml
+2026-03-07 12:05:13 | INFO     | DataReader                     | Reading CSV | path=data/Student_dataset_v2.csv
+2026-03-07 12:05:15 | INFO     | DataReader                     | Loaded | rows=10000 | cols=['student_id', 'student_name', 'student_class', 'student_gender', 'student_age', 'student_height', 'student_score']
+2026-03-07 12:05:15 | INFO     | DQRunner                       | [students] Running 14 checkers sequentially
+2026-03-07 12:05:15 | INFO     | PrimaryKeyChecker              | [students] PRIMARY KEY CHECK : student_id started
+2026-03-07 12:05:15 | INFO     | PrimaryKeyChecker              | [students] PK Null PASS | col=student_id
+2026-03-07 12:05:15 | INFO     | PrimaryKeyChecker              | [students] PK Duplicate PASS | col=student_id
+2026-03-07 12:05:15 | INFO     | MandatoryFieldChecker          | [students] MANDATORY FIELD CHECK started
+2026-03-07 12:05:15 | WARNING  | MandatoryFieldChecker          | [students] Mandatory Field FAIL | col=student_name | violations=193
+2026-03-07 12:05:15 | WARNING  | MandatoryFieldChecker          | [students] Mandatory Field FAIL | col=student_class | violations=214
+2026-03-07 12:05:16 | WARNING  | MandatoryFieldChecker          | [students] Mandatory Field FAIL | col=student_gender | violations=214
+2026-03-07 12:05:16 | INFO     | DataTypeChecker                | [students] DATA TYPE CHECK started
+2026-03-07 12:05:16 | INFO     | DataTypeChecker                | [students] Data Type PASS | col=student_id
+2026-03-07 12:05:16 | WARNING  | DataTypeChecker                | [students] Data Type FAIL | col=student_age | violations=179
+2026-03-07 12:05:16 | WARNING  | DataTypeChecker                | [students] Data Type FAIL | col=student_height | violations=278
+2026-03-07 12:05:16 | WARNING  | DataTypeChecker                | [students] Data Type FAIL | col=student_score | violations=312
+2026-03-07 12:05:16 | INFO     | PatternChecker                 | [students] PATTERN / FORMAT CHECK started
+2026-03-07 12:05:16 | INFO     | PatternChecker                 | [students] Pattern PASS | col=student_id
+2026-03-07 12:05:16 | INFO     | PatternChecker                 | [students] Pattern PASS | col=student_class
+2026-03-07 12:05:16 | INFO     | LengthChecker                  | [students] LENGTH CHECK started
+2026-03-07 12:05:16 | INFO     | LengthChecker                  | [students] Length PASS | col=student_name
+2026-03-07 12:05:16 | INFO     | ValueRangeChecker              | [students] VALUE RANGE CHECK started
+2026-03-07 12:05:16 | WARNING  | ValueRangeChecker              | [students] Value Range FAIL | col=student_age | violations=177
+2026-03-07 12:05:16 | WARNING  | ValueRangeChecker              | [students] Value Range FAIL | col=student_height | violations=117
+2026-03-07 12:05:16 | WARNING  | ValueRangeChecker              | [students] Value Range FAIL | col=student_score | violations=160
+2026-03-07 12:05:16 | INFO     | AllowedValuesChecker           | [students] ALLOWED VALUES CHECK started
+2026-03-07 12:05:17 | WARNING  | AllowedValuesChecker           | [students] Allowed Values FAIL | col=student_gender | violations=135
+2026-03-07 12:05:17 | INFO     | UniquenessChecker              | [students] UNIQUENESS CHECK started
+2026-03-07 12:05:17 | INFO     | UniquenessChecker              | [students] Uniqueness PASS | col=student_id
+2026-03-07 12:05:17 | INFO     | ConsistencyChecker             | [students] CONSISTENCY CHECK started
+2026-03-07 12:05:17 | WARNING  | ConsistencyChecker             | [students] Consistency FAIL | col=score_non_negative | violations=53
+2026-03-07 12:05:17 | WARNING  | ConsistencyChecker             | [students] Consistency FAIL | col=age_in_school_range | violations=177
+2026-03-07 12:05:17 | INFO     | WhitespaceChecker              | [students] WHITESPACE CHECK started
+2026-03-07 12:05:17 | INFO     | WhitespaceChecker              | [students] Whitespace PASS | col=student_name
+2026-03-07 12:05:17 | INFO     | WhitespaceChecker              | [students] Whitespace PASS | col=student_class
+2026-03-07 12:05:17 | INFO     | WhitespaceChecker              | [students] Whitespace PASS | col=student_gender
+2026-03-07 12:05:17 | INFO     | PrecisionScaleChecker          | [students] PRECISION / SCALE CHECK started
+2026-03-07 12:05:17 | INFO     | PrecisionScaleChecker          | [students] Precision PASS | col=student_score
+2026-03-07 12:05:17 | INFO     | PrecisionScaleChecker          | [students] Precision PASS | col=student_height
+2026-03-07 12:05:17 | INFO     | OutlierChecker                 | [students] OUTLIER CHECK  (z=3.0σ) started
+2026-03-07 12:05:17 | WARNING  | OutlierChecker                 | [students] Outlier FAIL | col=student_score | violations=63
+2026-03-07 12:05:17 | WARNING  | OutlierChecker                 | [students] Outlier FAIL | col=student_height | violations=42
+2026-03-07 12:05:17 | WARNING  | OutlierChecker                 | [students] Outlier FAIL | col=student_age | violations=87
+2026-03-07 12:05:17 | INFO     | DefaultValueChecker            | [students] DEFAULT VALUE CHECK started
+2026-03-07 12:05:18 | WARNING  | DefaultValueChecker            | [students] Default Val FAIL | col=student_name | violations=97
+2026-03-07 12:05:18 | INFO     | CompletenessRatioChecker       | [students] COMPLETENESS RATIO CHECK  (min : 95.0%) started
+2026-03-07 12:05:18 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_name
+2026-03-07 12:05:18 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_class
+2026-03-07 12:05:18 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_gender
+2026-03-07 12:05:18 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_age
+2026-03-07 12:05:18 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_height
+2026-03-07 12:05:18 | INFO     | CompletenessRatioChecker       | [students] Completeness PASS | col=student_score
+2026-03-07 12:05:18 | INFO     | DQRunner                       | [students] All checks completed — 34 results
+2026-03-07 12:05:18 | WARNING  | AlertManager                   | ALERT TRIGGERED | dataset=students | fails=16 > threshold=5
+2026-03-07 12:05:19 | INFO     | SparkSessionManager            | Spark stopped
+2026-03-07 12:05:19 | INFO     | MAIN                           | ETL DQ FRAMEWORK v6 FINISHED

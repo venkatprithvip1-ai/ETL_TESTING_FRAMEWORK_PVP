@@ -1,0 +1,277 @@
+{
+  "run_timestamp": "2026-03-06 16:33:38",
+  "framework": "ETL DQ v6",
+  "total_checks": 33,
+  "summary": {
+    "PASS": 12,
+    "FAIL": 19,
+    "SKIP": 0,
+    "ERROR": 2
+  },
+  "results": [
+    {
+      "dataset": "students",
+      "check_name": "PrimaryKeyChecker",
+      "column": "unknown",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "unhashable type: 'list'"
+    },
+    {
+      "dataset": "students",
+      "check_name": "Mandatory Field",
+      "column": "student_name",
+      "status": "FAIL",
+      "violations": 187,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Mandatory Field",
+      "column": "student_class",
+      "status": "FAIL",
+      "violations": 210,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Mandatory Field",
+      "column": "student_gender",
+      "status": "FAIL",
+      "violations": 214,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Data Type",
+      "column": "student_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Data Type",
+      "column": "student_age",
+      "status": "FAIL",
+      "violations": 179,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Data Type",
+      "column": "student_height",
+      "status": "FAIL",
+      "violations": 278,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Data Type",
+      "column": "student_score",
+      "status": "FAIL",
+      "violations": 312,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Pattern",
+      "column": "student_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Pattern",
+      "column": "student_class",
+      "status": "FAIL",
+      "violations": 221,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Length",
+      "column": "student_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Value Range",
+      "column": "student_age",
+      "status": "FAIL",
+      "violations": 177,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Value Range",
+      "column": "student_height",
+      "status": "FAIL",
+      "violations": 117,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Value Range",
+      "column": "student_score",
+      "status": "FAIL",
+      "violations": 160,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Allowed Values",
+      "column": "student_gender",
+      "status": "FAIL",
+      "violations": 297,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Uniqueness",
+      "column": "student_id",
+      "status": "FAIL",
+      "violations": 99,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Consistency",
+      "column": "score_non_negative",
+      "status": "FAIL",
+      "violations": 53,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Consistency",
+      "column": "age_in_school_range",
+      "status": "FAIL",
+      "violations": 177,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Whitespace",
+      "column": "student_name",
+      "status": "FAIL",
+      "violations": 216,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Whitespace",
+      "column": "student_class",
+      "status": "FAIL",
+      "violations": 225,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Whitespace",
+      "column": "student_gender",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Precision",
+      "column": "student_score",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Precision",
+      "column": "student_height",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Outlier",
+      "column": "student_score",
+      "status": "FAIL",
+      "violations": 63,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Outlier",
+      "column": "student_height",
+      "status": "FAIL",
+      "violations": 42,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Outlier",
+      "column": "student_age",
+      "status": "FAIL",
+      "violations": 87,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "DefaultValueChecker",
+      "column": "unknown",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "'NoneType' object has no attribute 'lower'"
+    },
+    {
+      "dataset": "students",
+      "check_name": "Completeness",
+      "column": "student_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Completeness",
+      "column": "student_class",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Completeness",
+      "column": "student_gender",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Completeness",
+      "column": "student_age",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Completeness",
+      "column": "student_height",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "students",
+      "check_name": "Completeness",
+      "column": "student_score",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    }
+  ]
+}

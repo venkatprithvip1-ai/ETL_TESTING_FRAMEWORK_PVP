@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETL DQ Report — 2026-03-06 16:51:17</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:        #0f1117;
+    --card:      #1a1d27;
+    --border:    #2a2d3a;
+    --text:      #e2e8f0;
+    --muted:     #8892a4;
+    --pass:      #22c55e;
+    --fail:      #ef4444;
+    --skip:      #f59e0b;
+    --error:     #a855f7;
+    --accent:    #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; padding: 24px; }
+  h1   { font-size: 1.8rem; color: var(--accent); margin-bottom: 4px; }
+  h2   { font-size: 1.2rem; color: var(--text); margin: 28px 0 12px; }
+  h3   { font-size: 1rem; color: var(--muted); font-weight: 500; }
+  .meta  { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
+
+  /* Summary cards */
+  .cards { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 28px; }
+  .card  {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 22px; min-width: 140px;
+  }
+  .card .num  { font-size: 2rem; font-weight: 700; }
+  .card .lbl  { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .card.pass  .num { color: var(--pass); }
+  .card.fail  .num { color: var(--fail); }
+  .card.skip  .num { color: var(--skip); }
+  .card.error .num { color: var(--error); }
+  .card.total .num { color: var(--accent); }
+
+  /* Charts row */
+  .charts { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 36px; }
+  .chart-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; flex: 1; min-width: 300px;
+  }
+  .chart-box canvas { max-height: 280px; }
+
+  /* Dataset section */
+  .dataset-block {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; margin-bottom: 24px;
+  }
+  .ds-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .ds-badge  {
+    background: var(--accent); color: #fff;
+    border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600;
+  }
+
+  /* Results table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { background: #12151f; color: var(--muted); text-align: left; padding: 8px 12px;
+       border-bottom: 1px solid var(--border); font-weight: 500; text-transform: uppercase; font-size: 0.72rem; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(59,130,246,0.05); }
+
+  /* Status badges */
+  .badge { display:inline-block; border-radius:4px; padding:2px 8px; font-size:0.75rem; font-weight:600; }
+  .badge.PASS  { background: rgba(34,197,94,0.15);  color: var(--pass);  }
+  .badge.FAIL  { background: rgba(239,68,68,0.15);  color: var(--fail);  }
+  .badge.SKIP  { background: rgba(245,158,11,0.15); color: var(--skip);  }
+  .badge.ERROR { background: rgba(168,85,247,0.15); color: var(--error); }
+
+  .violations { color: var(--fail); font-weight: 600; }
+  .zero       { color: var(--muted); }
+
+  footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 0.78rem; }
+</style>
+</head>
+<body>
+
+<h1>🔍 ETL Data Quality Report</h1>
+<p class="meta">Generated: 2026-03-06 16:51:17 &nbsp;|&nbsp; Framework: ETL DQ v6</p>
+
+<!-- Summary Cards -->
+<div class="cards">
+  <div class="card total"> <div class="num">34</div>  <div class="lbl">Total Checks</div> </div>
+  <div class="card pass">  <div class="num">13</div> <div class="lbl">Passed</div>       </div>
+  <div class="card fail">  <div class="num">21</div> <div class="lbl">Failed</div>       </div>
+  <div class="card skip">  <div class="num">0</div> <div class="lbl">Skipped</div>      </div>
+  <div class="card error"> <div class="num">0</div>  <div class="lbl">Errors</div>       </div>
+</div>
+
+<!-- Charts -->
+<div class="charts">
+  <div class="chart-box">
+    <h3>Overall Status Distribution</h3>
+    <canvas id="doughnutChart"></canvas>
+  </div>
+  <div class="chart-box">
+    <h3>Top 15 Checks by Violations</h3>
+    <canvas id="barChart"></canvas>
+  </div>
+</div>
+
+<!-- Per-dataset tables -->
+
+<div class="dataset-block">
+  <div class="ds-header">
+    <span class="ds-badge">DATASET</span>
+    <h2>students</h2>
+    <span style="color:var(--muted); font-size:0.82rem; margin-left:auto;">
+      ✓13 &nbsp; ✗21 &nbsp; ~0 &nbsp; !0
+    </span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Check Type</th>
+        <th>Column / Rule</th>
+        <th>Status</th>
+        <th style="text-align:right">Violations</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+  <td>PK Duplicate</td>
+  <td><code style="color:#93c5fd">student_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">99</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">student_name</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">187</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">student_class</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">210</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Mandatory Field</td>
+  <td><code style="color:#93c5fd">student_gender</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">214</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">student_age</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">179</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">student_height</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">278</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">student_score</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">312</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">student_class</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">221</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">student_age</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">177</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">student_height</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">117</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Value Range</td>
+  <td><code style="color:#93c5fd">student_score</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">160</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Allowed Values</td>
+  <td><code style="color:#93c5fd">student_gender</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">297</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Uniqueness</td>
+  <td><code style="color:#93c5fd">student_id</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">99</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Consistency</td>
+  <td><code style="color:#93c5fd">score_non_negative</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">53</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Consistency</td>
+  <td><code style="color:#93c5fd">age_in_school_range</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">177</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">student_name</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">216</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">student_class</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">225</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Outlier</td>
+  <td><code style="color:#93c5fd">student_score</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">63</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Outlier</td>
+  <td><code style="color:#93c5fd">student_height</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">42</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Outlier</td>
+  <td><code style="color:#93c5fd">student_age</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">87</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Default Val</td>
+  <td><code style="color:#93c5fd">student_name</code></td>
+  <td><span class="badge FAIL">FAIL</span></td>
+  <td style="text-align:right">
+    <span class="violations">97</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>PK Null</td>
+  <td><code style="color:#93c5fd">student_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Data Type</td>
+  <td><code style="color:#93c5fd">student_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Pattern</td>
+  <td><code style="color:#93c5fd">student_id</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Length</td>
+  <td><code style="color:#93c5fd">student_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Whitespace</td>
+  <td><code style="color:#93c5fd">student_gender</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Precision</td>
+  <td><code style="color:#93c5fd">student_score</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Precision</td>
+  <td><code style="color:#93c5fd">student_height</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">student_name</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">student_class</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">student_gender</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">student_age</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">student_height</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+<tr>
+  <td>Completeness</td>
+  <td><code style="color:#93c5fd">student_score</code></td>
+  <td><span class="badge PASS">PASS</span></td>
+  <td style="text-align:right">
+    <span class="zero">—</span>
+  </td>
+  <td style="color:var(--muted); font-size:0.8rem"></td>
+</tr>
+    </tbody>
+  </table>
+</div>
+
+
+<footer>ETL DQ Framework v6 &nbsp;•&nbsp; Auto-generated report &nbsp;•&nbsp; Do not edit manually</footer>
+
+<script>
+// ── Doughnut chart ────────────────────────────────────────────────────────────
+new Chart(document.getElementById('doughnutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['PASS', 'FAIL', 'SKIP', 'ERROR'],
+    datasets: [{
+      data: [13, 21, 0, 0],
+      backgroundColor: ['#22c55e', '#ef4444', '#f59e0b', '#a855f7'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#e2e8f0' } } },
+    cutout: '65%'
+  }
+});
+
+// ── Bar chart — top violators ─────────────────────────────────────────────────
+const barData = {"labels": ["students:Data Type", "students:Allowed Values", "students:Data Type", "students:Whitespace", "students:Pattern", "students:Whitespace", "students:Mandatory Fiel", "students:Mandatory Fiel", "students:Mandatory Fiel", "students:Data Type", "students:Value Range", "students:Consistency", "students:Value Range", "students:Value Range", "students:PK Duplicate"], "values": [312, 297, 278, 225, 221, 216, 214, 210, 187, 179, 177, 177, 160, 117, 99]};
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: barData.labels,
+    datasets: [{
+      label: 'Violations',
+      data: barData.values,
+      backgroundColor: '#ef4444',
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#8892a4' }, grid: { color: '#2a2d3a' } },
+      y: { ticks: { color: '#e2e8f0', font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>

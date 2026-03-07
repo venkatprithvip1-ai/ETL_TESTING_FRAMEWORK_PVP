@@ -1,0 +1,69 @@
+# config/rules_customers.yaml
+dataset:
+  name: customers
+  file: data/customers.csv
+  format: csv
+
+checks:
+  primary_key:
+    column: customer_id
+
+  mandatory_fields:
+    columns: [full_name, email, country, registration_date]
+
+  data_types:
+    customer_id:       integer
+    registration_date: date
+    credit_score:      integer
+
+  patterns:
+    email:             '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    registration_date: '^\d{4}-\d{2}-\d{2}$'
+
+  value_ranges:
+    credit_score: { min: 300, max: 900 }
+
+  allowed_values:
+    tier:    [BRONZE, SILVER, GOLD, PLATINUM]
+    country: [India, UAE, Singapore, UK, USA, Australia, Germany]
+
+  uniqueness:
+    columns: [customer_id, email]
+
+  whitespace:
+    columns: [full_name, city, country]
+
+  case:
+    tier: upper
+
+  default_values:
+    full_name:    [N/A, NA, null, none, test, dummy]
+    email:        [test@test.com, dummy@dummy.com]
+
+  cross_column:
+    - name: registration_not_future
+      condition: >
+        TO_DATE(registration_date,'yyyy-MM-dd') <= current_date()
+        OR registration_date IS NULL
+      message: "registration_date cannot be a future date"
+
+  completeness:
+    columns: [customer_id, full_name, email, country, tier]
+    min_pct: 92.0
+
+  outliers:
+    columns: [credit_score]
+
+  freshness:
+    column:       registration_date
+    max_days_old: 3650
+    date_fmt:     yyyy-MM-dd
+
+alerts:
+  fail_threshold: 5
+  slack:
+    enabled: false
+    webhook_url: ""
+  email:
+    enabled: false
+    recipients: []

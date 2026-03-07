@@ -1,0 +1,99 @@
+# ==============================================================================
+# config/rules_employees.yaml
+# ==============================================================================
+# DQ rules for the employees dataset.
+# Edit this file — no Python code changes needed.
+# ==============================================================================
+
+dataset:
+  name: employees
+  file: data/employees.csv
+  format: csv
+
+checks:
+
+  primary_key:
+    column: employee_id
+
+  mandatory_fields:
+    columns: [department, email, employee_name]
+
+  data_types:
+    employee_id: integer
+    salary:      decimal
+    join_date:   date
+
+  patterns:
+    email:       '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    employee_id: '^\d+$'
+    join_date:   '^\d{4}-\d{2}-\d{2}$'
+
+  lengths:
+    employee_name: { min: 2,  max: 60 }
+    department:    { min: 2,  max: 30 }
+
+  value_ranges:
+    salary: { min: 5000, max: 1000000 }
+
+  allowed_values:
+    department: [HR, IT, Finance, Marketing, Operations, Legal, Sales]
+
+  uniqueness:
+    columns: [employee_id, email]
+
+  consistency:
+    - name: salary_positive
+      condition: "try_cast(salary AS DOUBLE) > 0 OR salary IS NULL"
+      message: "Salary cannot be zero or negative"
+
+  referential_integrity:
+    - fk_col:    department
+      ref_col:   dept_name
+      ref_values: [HR, IT, Finance, Marketing, Operations, Legal, Sales]
+
+  whitespace:
+    columns: [employee_name, department, email, city]
+
+  precision:
+    salary: { scale: 2 }
+
+  case:
+    department: upper
+    email:      lower
+
+  special_chars:
+    columns: [employee_name, department]
+
+  outliers:
+    columns: [salary]
+
+  default_values:
+    employee_name: [N/A, NA, null, none, test, dummy, TBD]
+    email:         [test@test.com, dummy@dummy.com, na@na.com]
+
+  cross_column:
+    - name: join_date_not_future
+      condition: "TO_DATE(join_date,'yyyy-MM-dd') <= current_date() OR join_date IS NULL"
+      message: "join_date cannot be a future date"
+
+  completeness:
+    columns: [employee_name, email, department, salary, phone]
+    min_pct: 90.0
+
+  freshness:
+    column:       join_date
+    max_days_old: 3650
+    date_fmt:     yyyy-MM-dd
+
+alerts:
+  fail_threshold: 5
+  slack:
+    enabled: false
+    webhook_url: ""
+  email:
+    enabled: false
+    smtp_host:  smtp.gmail.com
+    smtp_port:  587
+    sender:     ""
+    password:   ""
+    recipients: []

@@ -1,0 +1,72 @@
+# config/rules_transactions.yaml
+dataset:
+  name: transactions
+  file: data/transactions.csv
+  format: csv
+
+checks:
+  primary_key:
+    column: txn_id
+
+  mandatory_fields:
+    columns: [account_id, txn_type, amount, currency, txn_date, status]
+
+  data_types:
+    txn_id:     integer
+    account_id: integer
+    amount:     decimal
+    txn_date:   date
+    value_date: date
+
+  patterns:
+    txn_date:   '^\d{4}-\d{2}-\d{2}$'
+    reference_no: '^REF\d{10}$'
+
+  value_ranges:
+    amount: { min: 0.01, max: 100000000 }
+
+  allowed_values:
+    txn_type: [CREDIT, DEBIT, TRANSFER, REFUND, REVERSAL]
+    currency: [USD, EUR, GBP, INR, AED, SGD]
+    status:   [SUCCESS, FAILED, PENDING, REVERSED]
+
+  uniqueness:
+    columns: [txn_id, reference_no]
+
+  precision:
+    amount: { scale: 4 }
+
+  whitespace:
+    columns: [description, txn_type]
+
+  default_values:
+    description: [N/A, NA, null, none, test]
+    currency:    [N/A, NA, null, none]
+
+  cross_column:
+    - name: value_date_gte_txn_date
+      condition: >
+        TO_DATE(value_date,'yyyy-MM-dd') >= TO_DATE(txn_date,'yyyy-MM-dd')
+        OR value_date IS NULL OR txn_date IS NULL
+      message: "value_date must be on or after txn_date"
+
+  completeness:
+    columns: [txn_id, account_id, amount, currency, txn_date, status]
+    min_pct: 99.0
+
+  outliers:
+    columns: [amount]
+
+  freshness:
+    column:       txn_date
+    max_days_old: 365
+    date_fmt:     yyyy-MM-dd
+
+alerts:
+  fail_threshold: 3
+  slack:
+    enabled: false
+    webhook_url: ""
+  email:
+    enabled: false
+    recipients: []

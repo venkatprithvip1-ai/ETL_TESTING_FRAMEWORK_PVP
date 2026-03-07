@@ -1,0 +1,7 @@
+#!/Users/pampanavenkatprithvi/ETL_DQ_PYSPARK_AUTO_v6/venv/bin/python3.11
+import sys
+from coverage.cmdline import main_deprecated
+if __name__ == '__main__':
+    if sys.argv[0].endswith('.exe'):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(main_deprecated())

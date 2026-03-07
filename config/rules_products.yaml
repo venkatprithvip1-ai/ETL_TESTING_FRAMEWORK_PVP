@@ -1,0 +1,57 @@
+# config/rules_products.yaml
+dataset:
+  name: products
+  file: data/products.csv
+  format: csv
+
+checks:
+  primary_key:
+    column: product_id
+
+  mandatory_fields:
+    columns: [sku, product_name, category, price]
+
+  data_types:
+    product_id: integer
+    price:      decimal
+    cost_price: decimal
+    stock_qty:  integer
+
+  patterns:
+    sku: '^[A-Z]{3}-\d{5}$'
+
+  value_ranges:
+    price:      { min: 0.01, max: 1000000 }
+    stock_qty:  { min: 0,    max: 999999  }
+
+  allowed_values:
+    category: [Electronics, Clothing, Furniture, Food, Books]
+
+  uniqueness:
+    columns: [product_id, sku]
+
+  consistency:
+    - name: cost_less_than_price
+      condition: >
+        try_cast(cost_price AS DOUBLE) < try_cast(price AS DOUBLE)
+        OR cost_price IS NULL OR price IS NULL
+      message: "cost_price should be less than selling price"
+
+  whitespace:
+    columns: [product_name, category]
+
+  default_values:
+    product_name: [N/A, NA, null, none, test, dummy]
+
+  completeness:
+    columns: [product_id, sku, product_name, category, price]
+    min_pct: 98.0
+
+alerts:
+  fail_threshold: 3
+  slack:
+    enabled: false
+    webhook_url: ""
+  email:
+    enabled: false
+    recipients: []

@@ -1,0 +1,1229 @@
+{
+  "run_timestamp": "2026-03-06 15:40:07",
+  "framework": "ETL DQ v6",
+  "total_checks": 152,
+  "summary": {
+    "PASS": 83,
+    "FAIL": 55,
+    "SKIP": 0,
+    "ERROR": 14
+  },
+  "results": [
+    {
+      "dataset": "employees",
+      "check_name": "Data Type",
+      "column": "employee_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Data Type",
+      "column": "salary",
+      "status": "FAIL",
+      "violations": 603,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Data Type",
+      "column": "join_date",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Mandatory Field",
+      "column": "department",
+      "status": "FAIL",
+      "violations": 2018,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Mandatory Field",
+      "column": "email",
+      "status": "FAIL",
+      "violations": 1991,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Mandatory Field",
+      "column": "employee_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Pattern",
+      "column": "email",
+      "status": "FAIL",
+      "violations": 2161,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Pattern",
+      "column": "employee_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Pattern",
+      "column": "join_date",
+      "status": "FAIL",
+      "violations": 1484,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Value Range",
+      "column": "salary",
+      "status": "FAIL",
+      "violations": 1860,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "PK Null",
+      "column": "employee_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "PK Duplicate",
+      "column": "employee_id",
+      "status": "FAIL",
+      "violations": 998,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Allowed Values",
+      "column": "department",
+      "status": "FAIL",
+      "violations": 3924,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Consistency",
+      "column": "salary_positive",
+      "status": "FAIL",
+      "violations": 1240,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Length",
+      "column": "employee_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Length",
+      "column": "department",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Ref Integrity",
+      "column": "department",
+      "status": "FAIL",
+      "violations": 8,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Precision",
+      "column": "salary",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Whitespace",
+      "column": "employee_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Whitespace",
+      "column": "department",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Whitespace",
+      "column": "email",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Whitespace",
+      "column": "city",
+      "status": "FAIL",
+      "violations": 3024,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Uniqueness",
+      "column": "employee_id",
+      "status": "FAIL",
+      "violations": 998,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Uniqueness",
+      "column": "email",
+      "status": "FAIL",
+      "violations": 99275,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "DefaultValueChecker",
+      "column": "unknown",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "'NoneType' object has no attribute 'lower'"
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Special Char",
+      "column": "employee_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Special Char",
+      "column": "department",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Cross-Column",
+      "column": "join_date_not_future",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Freshness",
+      "column": "join_date",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text 'not-a-date' could not be parsed at index 0. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Outlier",
+      "column": "salary",
+      "status": "FAIL",
+      "violations": 620,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Completeness",
+      "column": "employee_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Completeness",
+      "column": "email",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Completeness",
+      "column": "department",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Completeness",
+      "column": "salary",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Completeness",
+      "column": "phone",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Case",
+      "column": "department",
+      "status": "FAIL",
+      "violations": 71286,
+      "message": ""
+    },
+    {
+      "dataset": "employees",
+      "check_name": "Case",
+      "column": "email",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Value Range",
+      "column": "quantity",
+      "status": "FAIL",
+      "violations": 2346,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Value Range",
+      "column": "unit_price",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Value Range",
+      "column": "total_amount",
+      "status": "FAIL",
+      "violations": 6175,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Mandatory Field",
+      "column": "customer_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Mandatory Field",
+      "column": "product_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Mandatory Field",
+      "column": "order_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Mandatory Field",
+      "column": "status",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "PK Null",
+      "column": "order_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "PK Duplicate",
+      "column": "order_id",
+      "status": "FAIL",
+      "violations": 1561,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Consistency",
+      "column": "total_matches_qty_x_price",
+      "status": "FAIL",
+      "violations": 3129,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Allowed Values",
+      "column": "status",
+      "status": "FAIL",
+      "violations": 4012,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Allowed Values",
+      "column": "channel",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Cross-Column",
+      "column": "delivery_after_order",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Data Type",
+      "column": "order_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Data Type",
+      "column": "customer_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Data Type",
+      "column": "product_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Data Type",
+      "column": "quantity",
+      "status": "FAIL",
+      "violations": 797,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Data Type",
+      "column": "unit_price",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Data Type",
+      "column": "total_amount",
+      "status": "FAIL",
+      "violations": 798,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Data Type",
+      "column": "order_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Uniqueness",
+      "column": "order_id",
+      "status": "FAIL",
+      "violations": 1561,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Freshness",
+      "column": "order_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Completeness",
+      "column": "order_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Completeness",
+      "column": "customer_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Completeness",
+      "column": "order_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Completeness",
+      "column": "status",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "orders",
+      "check_name": "Completeness",
+      "column": "total_amount",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Pattern",
+      "column": "sku",
+      "status": "FAIL",
+      "violations": 990,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "PK Null",
+      "column": "product_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "PK Duplicate",
+      "column": "product_id",
+      "status": "FAIL",
+      "violations": 281,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Value Range",
+      "column": "price",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Value Range",
+      "column": "stock_qty",
+      "status": "FAIL",
+      "violations": 422,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Mandatory Field",
+      "column": "sku",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Mandatory Field",
+      "column": "product_name",
+      "status": "FAIL",
+      "violations": 484,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Mandatory Field",
+      "column": "category",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Mandatory Field",
+      "column": "price",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Data Type",
+      "column": "product_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Data Type",
+      "column": "price",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Data Type",
+      "column": "cost_price",
+      "status": "FAIL",
+      "violations": 200,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Data Type",
+      "column": "stock_qty",
+      "status": "FAIL",
+      "violations": 224,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Allowed Values",
+      "column": "category",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "DefaultValueChecker",
+      "column": "unknown",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "'NoneType' object has no attribute 'lower'"
+    },
+    {
+      "dataset": "products",
+      "check_name": "Consistency",
+      "column": "cost_less_than_price",
+      "status": "FAIL",
+      "violations": 205,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Whitespace",
+      "column": "product_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Whitespace",
+      "column": "category",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Uniqueness",
+      "column": "product_id",
+      "status": "FAIL",
+      "violations": 281,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Uniqueness",
+      "column": "sku",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Completeness",
+      "column": "product_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Completeness",
+      "column": "sku",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Completeness",
+      "column": "product_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Completeness",
+      "column": "category",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "products",
+      "check_name": "Completeness",
+      "column": "price",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Pattern",
+      "column": "txn_date",
+      "status": "FAIL",
+      "violations": 7567,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Pattern",
+      "column": "reference_no",
+      "status": "FAIL",
+      "violations": 10043,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Value Range",
+      "column": "amount",
+      "status": "FAIL",
+      "violations": 3941,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Data Type",
+      "column": "txn_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Data Type",
+      "column": "account_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Data Type",
+      "column": "amount",
+      "status": "FAIL",
+      "violations": 1948,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Data Type",
+      "column": "txn_date",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '99-99-9999' could not be parsed at index 0. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Data Type",
+      "column": "value_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "PK Null",
+      "column": "txn_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "PK Duplicate",
+      "column": "txn_id",
+      "status": "FAIL",
+      "violations": 2486,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Mandatory Field",
+      "column": "account_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Mandatory Field",
+      "column": "txn_type",
+      "status": "FAIL",
+      "violations": 4991,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Mandatory Field",
+      "column": "amount",
+      "status": "FAIL",
+      "violations": 1982,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Mandatory Field",
+      "column": "currency",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Mandatory Field",
+      "column": "txn_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Mandatory Field",
+      "column": "status",
+      "status": "FAIL",
+      "violations": 4892,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Whitespace",
+      "column": "description",
+      "status": "FAIL",
+      "violations": 15239,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Whitespace",
+      "column": "txn_type",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Allowed Values",
+      "column": "txn_type",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Allowed Values",
+      "column": "currency",
+      "status": "FAIL",
+      "violations": 4949,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Allowed Values",
+      "column": "status",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "DefaultValueChecker",
+      "column": "unknown",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "'NoneType' object has no attribute 'lower'"
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Cross-Column",
+      "column": "value_date_gte_txn_date",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '99-99-9999' could not be parsed at index 0. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Precision",
+      "column": "amount",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Freshness",
+      "column": "txn_date",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Outlier",
+      "column": "amount",
+      "status": "FAIL",
+      "violations": 1956,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Uniqueness",
+      "column": "txn_id",
+      "status": "FAIL",
+      "violations": 2486,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Uniqueness",
+      "column": "reference_no",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Completeness",
+      "column": "txn_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Completeness",
+      "column": "account_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Completeness",
+      "column": "amount",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Completeness",
+      "column": "currency",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Completeness",
+      "column": "txn_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "transactions",
+      "check_name": "Completeness",
+      "column": "status",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Data Type",
+      "column": "customer_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Data Type",
+      "column": "registration_date",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Data Type",
+      "column": "credit_score",
+      "status": "FAIL",
+      "violations": 558,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Pattern",
+      "column": "email",
+      "status": "FAIL",
+      "violations": 16292,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Pattern",
+      "column": "registration_date",
+      "status": "FAIL",
+      "violations": 2233,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Mandatory Field",
+      "column": "full_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Mandatory Field",
+      "column": "email",
+      "status": "FAIL",
+      "violations": 3025,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Mandatory Field",
+      "column": "country",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Mandatory Field",
+      "column": "registration_date",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Value Range",
+      "column": "credit_score",
+      "status": "FAIL",
+      "violations": 1774,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "PK Null",
+      "column": "customer_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "PK Duplicate",
+      "column": "customer_id",
+      "status": "FAIL",
+      "violations": 861,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Case",
+      "column": "tier",
+      "status": "FAIL",
+      "violations": 5933,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Whitespace",
+      "column": "full_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Whitespace",
+      "column": "city",
+      "status": "FAIL",
+      "violations": 4598,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Whitespace",
+      "column": "country",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "DefaultValueChecker",
+      "column": "unknown",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "'NoneType' object has no attribute 'lower'"
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Allowed Values",
+      "column": "tier",
+      "status": "FAIL",
+      "violations": 5933,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Allowed Values",
+      "column": "country",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Cross-Column",
+      "column": "registration_not_future",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Freshness",
+      "column": "registration_date",
+      "status": "ERROR",
+      "violations": 0,
+      "message": "[CANNOT_PARSE_TIMESTAMP] Text '2025/01/01' could not be parsed at index 4. Use `try_to_date` to tolerate invalid input string and return NULL instead. SQLSTATE: 22007"
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Outlier",
+      "column": "credit_score",
+      "status": "FAIL",
+      "violations": 598,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Uniqueness",
+      "column": "customer_id",
+      "status": "FAIL",
+      "violations": 861,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Uniqueness",
+      "column": "email",
+      "status": "FAIL",
+      "violations": 149275,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Completeness",
+      "column": "customer_id",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Completeness",
+      "column": "full_name",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Completeness",
+      "column": "email",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Completeness",
+      "column": "country",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    },
+    {
+      "dataset": "customers",
+      "check_name": "Completeness",
+      "column": "tier",
+      "status": "PASS",
+      "violations": 0,
+      "message": ""
+    }
+  ]
+}

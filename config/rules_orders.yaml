@@ -1,0 +1,66 @@
+# config/rules_orders.yaml
+dataset:
+  name: orders
+  file: data/orders.csv
+  format: csv
+
+checks:
+  primary_key:
+    column: order_id
+
+  mandatory_fields:
+    columns: [customer_id, product_id, order_date, status]
+
+  data_types:
+    order_id:    integer
+    customer_id: integer
+    product_id:  integer
+    quantity:    integer
+    unit_price:  decimal
+    total_amount: decimal
+    order_date:  date
+
+  value_ranges:
+    quantity:     { min: 1,    max: 9999   }
+    unit_price:   { min: 0.01, max: 100000 }
+    total_amount: { min: 0.01, max: 5000000 }
+
+  allowed_values:
+    status:  [PENDING, SHIPPED, DELIVERED, CANCELLED, RETURNED]
+    channel: [ONLINE, STORE, MOBILE, PARTNER]
+
+  uniqueness:
+    columns: [order_id]
+
+  consistency:
+    - name: total_matches_qty_x_price
+      condition: >
+        ABS(try_cast(total_amount AS DOUBLE) -
+            try_cast(quantity AS INT) * try_cast(unit_price AS DOUBLE)) < 0.01
+        OR total_amount IS NULL OR quantity IS NULL OR unit_price IS NULL
+      message: "total_amount should equal quantity × unit_price"
+
+  cross_column:
+    - name: delivery_after_order
+      condition: >
+        TO_DATE(delivery_date,'yyyy-MM-dd') >= TO_DATE(order_date,'yyyy-MM-dd')
+        OR delivery_date IS NULL OR order_date IS NULL
+      message: "delivery_date must be on or after order_date"
+
+  completeness:
+    columns: [order_id, customer_id, order_date, status, total_amount]
+    min_pct: 95.0
+
+  freshness:
+    column:       order_date
+    max_days_old: 730
+    date_fmt:     yyyy-MM-dd
+
+alerts:
+  fail_threshold: 5
+  slack:
+    enabled: false
+    webhook_url: ""
+  email:
+    enabled: false
+    recipients: []
